@@ -1,0 +1,1843 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEW Spickzettel</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6b66; --line: #e3e2de;
+  --accent: #2f6fd6; --accent-soft: #e8f0fd; --warn-bg: #fff6e0; --warn-line: #f0c75e;
+  --code-bg: #f6f8fa; --mark: #ffe066;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141413; --panel: #1d1d1c; --text: #ecebe6; --muted: #9a9993; --line: #33322f;
+    --accent: #6ea1ff; --accent-soft: #1f2b44; --warn-bg: #2e2716; --warn-line: #8a6d1e;
+    --code-bg: #0d1117; --mark: #8a6d00;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 76px; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent); text-decoration: none; }
+code, pre, kbd { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; }
+:not(pre) > code { background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: var(--panel); }
+
+header { position: sticky; top: 0; z-index: 10; background: var(--panel); border-bottom: 1px solid var(--line);
+  display: flex; gap: 16px; align-items: center; padding: 10px 20px; }
+header .logo { font-weight: 700; white-space: nowrap; }
+.search { flex: 1; position: relative; max-width: 720px; }
+.search input { width: 100%; font: inherit; font-size: 16px; padding: 9px 12px 9px 36px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--text); outline: none; }
+.search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.count { color: var(--muted); font-size: 13px; white-space: nowrap; }
+
+.layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); }
+nav { position: sticky; top: 59px; height: calc(100vh - 59px); overflow-y: auto; padding: 16px 12px 40px 20px;
+  border-right: 1px solid var(--line); }
+.nav-cat { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
+  margin: 14px 0 4px; font-weight: 600; }
+nav a { display: block; color: var(--text); padding: 3px 8px; border-radius: 6px; font-size: 13.5px; }
+nav a:hover { background: var(--accent-soft); }
+nav a.hidden, .nav-group.hidden { display: none; }
+
+main { padding: 20px 28px 80px; max-width: 1100px; }
+section.cat > h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 26px 0 10px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; }
+.card h3 { margin: 0 0 8px; font-size: 17px; }
+.card h3 a { color: var(--text); }
+.card .body p, .card .body ul, .card .body ol { margin: 6px 0; }
+.card .body li { margin: 2px 0; }
+.path { color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
+.warn { background: var(--warn-bg); border-left: 3px solid var(--warn-line); padding: 8px 12px; border-radius: 4px; margin: 10px 0; }
+.tbl { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 14px; }
+.tbl th, .tbl td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+.tbl th { background: var(--bg); }
+
+.code { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px;
+  background: var(--bg); border-bottom: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+.copy { font: inherit; font-size: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--text);
+  border-radius: 5px; padding: 2px 9px; cursor: pointer; }
+.copy:hover { border-color: var(--accent); }
+.copy.done { color: #2a9d55; border-color: #2a9d55; }
+pre { margin: 0; overflow-x: auto; background: var(--code-bg); }
+pre code.hljs, pre code { display: block; padding: 12px 14px; background: var(--code-bg); line-height: 1.5; }
+
+/* eine Farbe pro Abschnitt */
+[data-cat="start"]    { --c: #64748b; --c-soft: #eef1f5; }
+[data-cat="jpql"]     { --c: #2563eb; --c-soft: #e8effd; }
+[data-cat="logic"]    { --c: #7c3aed; --c-soft: #f1eafd; }
+[data-cat="rest"]     { --c: #059669; --c-soft: #e3f6ef; }
+[data-cat="angular"]  { --c: #dc2626; --c-soft: #fdeaea; }
+[data-cat="graphql"]  { --c: #db2777; --c-soft: #fce8f2; }
+[data-cat="ref"]      { --c: #d97706; --c-soft: #fdf2e2; }
+[data-cat="solution"] { --c: #0891b2; --c-soft: #e2f4f8; }
+@media (prefers-color-scheme: dark) {
+  [data-cat="start"]    { --c: #94a3b8; --c-soft: #1f242b; }
+  [data-cat="jpql"]     { --c: #60a5fa; --c-soft: #17233a; }
+  [data-cat="logic"]    { --c: #a78bfa; --c-soft: #241d38; }
+  [data-cat="rest"]     { --c: #34d399; --c-soft: #142d25; }
+  [data-cat="angular"]  { --c: #f87171; --c-soft: #351b1b; }
+  [data-cat="graphql"]  { --c: #f472b6; --c-soft: #351a29; }
+  [data-cat="ref"]      { --c: #fbbf24; --c-soft: #33280f; }
+  [data-cat="solution"] { --c: #22d3ee; --c-soft: #102d33; }
+}
+section.cat > h2 { color: var(--c); border-bottom: 2px solid var(--c); padding-bottom: 4px; }
+section.cat .card { border-left: 5px solid var(--c); }
+section.cat .card h3 a { color: var(--c); }
+section.cat .card .code-head { background: var(--c-soft); }
+section.cat :not(pre) > code { background: var(--c-soft); }
+section.cat .tbl th { background: var(--c-soft); }
+.nav-group .nav-cat { color: var(--c); display: flex; align-items: center; gap: 6px; }
+.nav-group .nav-cat::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+.nav-group a { border-left: 2px solid transparent; border-radius: 0 6px 6px 0; }
+.nav-group a:hover { background: var(--c-soft); border-left-color: var(--c); }
+
+.card.hidden, section.cat.hidden { display: none; }
+.empty { display: none; color: var(--muted); padding: 40px 0; text-align: center; }
+::highlight(search) { background: var(--mark); color: inherit; }
+.menu-btn { display: none; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  nav { display: none; position: fixed; inset: 59px 0 0 0; height: auto; background: var(--panel); z-index: 9; }
+  nav.open { display: block; }
+  .menu-btn { display: inline-block; font: inherit; border: 1px solid var(--line); background: var(--bg); color: var(--text);
+    border-radius: 6px; padding: 6px 10px; }
+  header { padding: 10px 16px; }
+  header .logo { display: none; }
+  main { padding: 12px 16px 60px; }
+  .count { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <button class="menu-btn" id="menu" type="button">☰</button>
+  <div class="logo">SEW Spickzettel</div>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Suchen … z.B. named query, having, native, 201, signal, graphql   ( / )" autocomplete="off" autofocus>
+  </div>
+  <div class="count" id="count"></div>
+</header>
+<div class="layout">
+  <nav id="nav">
+<div class="nav-group" data-cat="start"><div class="nav-cat">Start & Ablauf</div>
+<a href="#ablauf" data-for="ablauf">Ablauf im Test – Checkliste</a>
+<a href="#aufgaben" data-for="aufgaben">Übersicht: Was war im letzten Test zu tun?</a>
+</div>
+<div class="nav-group" data-cat="jpql"><div class="nav-cat">Abfragen (JPQL / SQL)</div>
+<a href="#panache" data-for="panache">Panache Repository – Spickzettel</a>
+<a href="#typed" data-for="typed">Aufgabe 1 – TypedQuery (Summe einer Reise)</a>
+<a href="#named" data-for="named">Aufgabe 2 – @NamedQuery + Konstruktor-Ausdruck (DTO-Projektion)</a>
+<a href="#having" data-for="having">Aufgabe 3 – left join + group by + having</a>
+<a href="#native" data-for="native">Aufgabe 4 – Native SQL Query</a>
+<a href="#jpqlref" data-for="jpqlref">JPQL Kurzreferenz – Funktionen &amp; Syntax</a>
+</div>
+<div class="nav-group" data-cat="logic"><div class="nav-cat">Geschäftslogik</div>
+<a href="#service" data-for="service">Aufgabe 5 – Service mit Regeln in fixer Reihenfolge</a>
+<a href="#exceptions" data-for="exceptions">Eigene Exceptions (Hierarchie)</a>
+</div>
+<div class="nav-group" data-cat="rest"><div class="nav-cat">REST</div>
+<a href="#resource" data-for="resource">Aufgabe 6 – REST-Ressourcen (GET / POST 201 / DELETE 204)</a>
+<a href="#mapper" data-for="mapper">Fehlerbehandlung – @ServerExceptionMapper → {&quot;message&quot;: &quot;...&quot;}</a>
+<a href="#httpcodes" data-for="httpcodes">HTTP-Statuscodes &amp; Response-Builder</a>
+</div>
+<div class="nav-group" data-cat="angular"><div class="nav-cat">Angular</div>
+<a href="#ng-page" data-for="ng-page">Aufgabe 7 – Page-Komponente mit Signals</a>
+<a href="#ng-child" data-for="ng-child">Kind-Komponente mit input.required() und output()</a>
+<a href="#ng-syntax" data-for="ng-syntax">Angular Syntax-Spickzettel (Control Flow, Bindings, Signals)</a>
+</div>
+<div class="nav-group" data-cat="graphql"><div class="nav-cat">GraphQL</div>
+<a href="#gql" data-for="gql">Aufgabe 8 – GraphQL API (@GraphQLApi, @Query, @Name)</a>
+</div>
+<div class="nav-group" data-cat="ref"><div class="nav-cat">Nachschlagen</div>
+<a href="#pitfalls" data-for="pitfalls">Typische Fehler &amp; Lösungen</a>
+<a href="#entities" data-for="entities">Entity-Mapping Spickzettel (JPA)</a>
+<a href="#quarkus-config" data-for="quarkus-config">application.properties &amp; HTTP-Dateien</a>
+</div>
+<div class="nav-group" data-cat="solution"><div class="nav-cat">Komplettlösung Fruit Shipping</div>
+<a href="#file-cargoitemrepository-java" data-for="file-cargoitemrepository-java">CargoItemRepository.java</a>
+<a href="#file-containerrepository-java" data-for="file-containerrepository-java">ContainerRepository.java</a>
+<a href="#file-cargoservice-java" data-for="file-cargoservice-java">CargoService.java</a>
+<a href="#file-fruitresource-java" data-for="file-fruitresource-java">FruitResource.java</a>
+<a href="#file-voyageresource-java" data-for="file-voyageresource-java">VoyageResource.java</a>
+<a href="#file-containerresource-java" data-for="file-containerresource-java">ContainerResource.java</a>
+<a href="#file-cargoitemresource-java" data-for="file-cargoitemresource-java">CargoItemResource.java</a>
+<a href="#file-exceptionmappers-java" data-for="file-exceptionmappers-java">ExceptionMappers.java</a>
+<a href="#file-shippinggraphqlapi-java" data-for="file-shippinggraphqlapi-java">ShippingGraphQLApi.java</a>
+<a href="#file-cargo-ts" data-for="file-cargo-ts">cargo.ts</a>
+<a href="#file-cargo-html" data-for="file-cargo-html">cargo.html</a>
+<a href="#file-container-list-ts" data-for="file-container-list-ts">container-list.ts</a>
+<a href="#file-container-list-html" data-for="file-container-list-html">container-list.html</a>
+<a href="#file-container-list-css" data-for="file-container-list-css">container-list.css</a>
+</div>
+  </nav>
+  <main>
+<section class="cat" data-cat="start"><h2>Start & Ablauf</h2><article class="card" id="ablauf" data-search="ablauf im test – checkliste ablauf checkliste reihenfolge commit push angabe readme todo readme.adoc komplett lesen (10 min). fehlermeldungen &amp;amp; reihenfolge der regeln stehen dort + in api/requests.http . alle todo suchen: intellij ⌘⇧f → todo bzw. unsupportedoperationexception . h2 starten → backend ./mvnw quarkus:dev → in dev-mode r drücken = tests laufen live. reihenfolge wie angabe: block a queries → b service → c rest → d angular → e graphql. nach jeder aufgabe committen + pushen (aussagekräftige message). tests nie ändern . entities/dtos/mapper sind vorgegeben – nur benutzen. wichtigste falle: filtern / summieren / gruppieren in der query , nie listall() + stream. die tests zählen geladene entities (hibernate-statistik). befehle # datenbank (eigenes terminal, einmalig create, dann start) cd backend &amp;&amp; ./h2-server-create.sh &amp;&amp; ./h2-server-start.sh # backend dev-mode (dev ui: http://localhost:8080/q/dev-ui) cd backend &amp;&amp; ./mvnw quarkus:dev # alle tests / eine testklasse / eine testmethode ./mvnw test ./mvnw test -dtest=cargoitemrepositorytest ./mvnw test -dtest=&#x27;cargoservicetest#mixedcategory_isrejected&#x27; # frontend cd frontend &amp;&amp; npm ci &amp;&amp; npm start # http://localhost:4200 npm run build # kontrolle: muss fehlerfrei bauen npx ng generate component container-list # commit nach jeder aufgabe git add -a &amp;&amp; git commit -m &quot;feat: implement totalweightbyvoyage&quot; &amp;&amp; git push"><h3><a href="#ablauf">Ablauf im Test – Checkliste</a></h3><div class="body">
+<ol>
+<li><b>README.adoc komplett lesen</b> (10 min). Fehlermeldungen &amp; Reihenfolge der Regeln stehen dort + in <code>api/requests.http</code>.</li>
+<li>Alle <code>TODO</code> suchen: IntelliJ <kbd>⌘⇧F</kbd> → <code>TODO</code> bzw. <code>UnsupportedOperationException</code>.</li>
+<li>H2 starten → Backend <code>./mvnw quarkus:dev</code> → in Dev-Mode <kbd>r</kbd> drücken = Tests laufen live.</li>
+<li>Reihenfolge wie Angabe: <b>Block A</b> Queries → <b>B</b> Service → <b>C</b> REST → <b>D</b> Angular → <b>E</b> GraphQL.</li>
+<li><b>Nach jeder Aufgabe committen + pushen</b> (aussagekräftige Message).</li>
+<li>Tests <b>nie ändern</b>. Entities/DTOs/Mapper sind vorgegeben – nur benutzen.</li>
+</ol>
+<div class="warn"><b>Wichtigste Falle:</b> Filtern / Summieren / Gruppieren <b>in der Query</b>, nie <code>listAll()</code> + Stream. Die Tests zählen geladene Entities (Hibernate-Statistik).</div>
+</div><div class="code"><div class="code-head"><span>Befehle</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-bash"># Datenbank (eigenes Terminal, einmalig create, dann start)
+cd backend &amp;&amp; ./h2-server-create.sh &amp;&amp; ./h2-server-start.sh
+
+# Backend dev-mode (Dev UI: http://localhost:8080/q/dev-ui)
+cd backend &amp;&amp; ./mvnw quarkus:dev
+
+# alle Tests / eine Testklasse / eine Testmethode
+./mvnw test
+./mvnw test -Dtest=CargoItemRepositoryTest
+./mvnw test -Dtest=&#x27;CargoServiceTest#mixedCategory_isRejected&#x27;
+
+# Frontend
+cd frontend &amp;&amp; npm ci &amp;&amp; npm start      # http://localhost:4200
+npm run build                            # Kontrolle: muss fehlerfrei bauen
+npx ng generate component container-list
+
+# Commit nach jeder Aufgabe
+git add -A &amp;&amp; git commit -m &quot;feat: implement totalWeightByVoyage&quot; &amp;&amp; git push</code></pre></div></article><article class="card" id="aufgaben" data-search="übersicht: was war im letzten test zu tun? uebersicht aufgaben block a b c d e named query typed query native # aufgabe technik karte 1 gesamtgewicht einer reise jpql typedquery&amp;lt;double&amp;gt; , coalesce(sum(..),0) typedquery 2 gewicht pro frucht @namedquery + konstruktor-ausdruck select new ...dto(...) namedquery 3 container mit freier kapazität jpql left join + group by + having having 4 container pro kategorie native sql , count(distinct case when ...) native 5 ladung prüfen + speichern regeln in fixer reihenfolge, exceptions service 6 rest-ressourcen + fehler dtos, 201+location, 204, @serverexceptionmapper rest 7 angular client standalone, signals, @if/@for/@switch , input/output angular 8 graphql (sehr gut) @graphqlapi , @query , @name graphql "><h3><a href="#aufgaben">Übersicht: Was war im letzten Test zu tun?</a></h3><div class="body">
+<table class="tbl">
+<tr><th>#</th><th>Aufgabe</th><th>Technik</th><th>Karte</th></tr>
+<tr><td>1</td><td>Gesamtgewicht einer Reise</td><td>JPQL <b>TypedQuery&lt;Double&gt;</b>, <code>coalesce(sum(..),0)</code></td><td><a href="#typed">TypedQuery</a></td></tr>
+<tr><td>2</td><td>Gewicht pro Frucht</td><td><b>@NamedQuery</b> + Konstruktor-Ausdruck <code>select new ...Dto(...)</code></td><td><a href="#named">NamedQuery</a></td></tr>
+<tr><td>3</td><td>Container mit freier Kapazität</td><td>JPQL <code>left join</code> + <code>group by</code> + <code>having</code></td><td><a href="#having">having</a></td></tr>
+<tr><td>4</td><td>Container pro Kategorie</td><td><b>Native SQL</b>, <code>count(distinct case when ...)</code></td><td><a href="#native">Native</a></td></tr>
+<tr><td>5</td><td>Ladung prüfen + speichern</td><td>Regeln in fixer Reihenfolge, Exceptions</td><td><a href="#service">Service</a></td></tr>
+<tr><td>6</td><td>REST-Ressourcen + Fehler</td><td>DTOs, 201+Location, 204, <code>@ServerExceptionMapper</code></td><td><a href="#resource">REST</a></td></tr>
+<tr><td>7</td><td>Angular Client</td><td>Standalone, Signals, <code>@if/@for/@switch</code>, input/output</td><td><a href="#ng-page">Angular</a></td></tr>
+<tr><td>8</td><td>GraphQL (Sehr gut)</td><td><code>@GraphQLApi</code>, <code>@Query</code>, <code>@Name</code></td><td><a href="#gql">GraphQL</a></td></tr>
+</table>
+</div></article></section>
+<section class="cat" data-cat="jpql"><h2>Abfragen (JPQL / SQL)</h2><article class="card" id="panache" data-search="panache repository – spickzettel panache repository list find count delete sort parameters findbyidoptional page update simplified query repository-pattern ( kein active record ): @applicationscoped class xrepository implements panacherepository&amp;lt;x&amp;gt; . panache erlaubt kurz-queries ohne select/from : &quot;field&quot; , &quot;field = ?1&quot; , &quot;a = :a and b &gt; :b&quot; . typische repository-methoden @applicationscoped public class fruitrepository implements panacherepository&lt;fruit&gt; { public list&lt;fruit&gt; findallorderedbyname() { return listall(sort.by(&quot;name&quot;)); // sort.by(&quot;a&quot;).and(&quot;b&quot;, sort.direction.descending) } public list&lt;fruit&gt; findbyclimacteric(boolean climacteric) { return list(&quot;climacteric&quot;, sort.by(&quot;name&quot;), climacteric); // kurzform: &quot;climacteric = ?1&quot; } public optional&lt;fruit&gt; findbyname(string name) { return find(&quot;name&quot;, name).firstresultoptional(); } public list&lt;fruit&gt; findwarmerthan(double min) { return list(&quot;mintemperature &gt;= ?1 order by name&quot;, min); } public list&lt;fruit&gt; search(string text) { return list(&quot;lower(name) like :q&quot;, parameters.with(&quot;q&quot;, &quot;%&quot; + text.tolowercase() + &quot;%&quot;)); } public long countbyclimacteric(boolean c) { return count(&quot;climacteric&quot;, c); } public list&lt;container&gt; findbyvoyage(long voyageid) { // pfad über beziehung: voyage.id return getentitymanager().createquery( &quot;select c from container c where c.voyage.id = :id order by c.containernumber&quot;, container.class) .setparameter(&quot;id&quot;, voyageid).getresultlist(); } } eingebaute methoden repo.findbyid(id) // entity oder null repo.findbyidoptional(id) // optional&lt;entity&gt; -&gt; .orelsethrow(() -&gt; new notfoundexception(&quot;...&quot;)) repo.listall() / listall(sort.by(&quot;name&quot;)) repo.count() / count(&quot;field&quot;, value) repo.persist(entity) // braucht @transactional repo.deletebyid(id) // boolean: true wenn gelöscht repo.delete(entity) repo.delete(&quot;voyage.id&quot;, id) // long: anzahl gelöscht repo.update(&quot;set weightkg = ?1 where id = ?2&quot;, 100.0, id) repo.find(&quot;climacteric&quot;, true).page(page.of(0, 10)).list() // paging repo.getentitymanager() // für typedquery / namedquery / native"><h3><a href="#panache">Panache Repository – Spickzettel</a></h3><div class="body">
+<p>Repository-Pattern (<b>kein Active Record</b>): <code>@ApplicationScoped class XRepository implements PanacheRepository&lt;X&gt;</code>.
+Panache erlaubt Kurz-Queries ohne <code>select/from</code>: <code>"field"</code>, <code>"field = ?1"</code>, <code>"a = :a and b > :b"</code>.</p>
+</div><div class="code"><div class="code-head"><span>Typische Repository-Methoden</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">@ApplicationScoped
+public class FruitRepository implements PanacheRepository&lt;Fruit&gt; {
+
+    public List&lt;Fruit&gt; findAllOrderedByName() {
+        return listAll(Sort.by(&quot;name&quot;));                        // Sort.by(&quot;a&quot;).and(&quot;b&quot;, Sort.Direction.Descending)
+    }
+
+    public List&lt;Fruit&gt; findByClimacteric(boolean climacteric) {
+        return list(&quot;climacteric&quot;, Sort.by(&quot;name&quot;), climacteric); // Kurzform: &quot;climacteric = ?1&quot;
+    }
+
+    public Optional&lt;Fruit&gt; findByName(String name) {
+        return find(&quot;name&quot;, name).firstResultOptional();
+    }
+
+    public List&lt;Fruit&gt; findWarmerThan(double min) {
+        return list(&quot;minTemperature &gt;= ?1 order by name&quot;, min);
+    }
+
+    public List&lt;Fruit&gt; search(String text) {
+        return list(&quot;lower(name) like :q&quot;, Parameters.with(&quot;q&quot;, &quot;%&quot; + text.toLowerCase() + &quot;%&quot;));
+    }
+
+    public long countByClimacteric(boolean c) {
+        return count(&quot;climacteric&quot;, c);
+    }
+
+    public List&lt;Container&gt; findByVoyage(long voyageId) {         // Pfad über Beziehung: voyage.id
+        return getEntityManager().createQuery(
+                &quot;select c from Container c where c.voyage.id = :id order by c.containerNumber&quot;, Container.class)
+                .setParameter(&quot;id&quot;, voyageId).getResultList();
+    }
+}</code></pre></div><div class="code"><div class="code-head"><span>Eingebaute Methoden</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">repo.findById(id)                 // Entity oder null
+repo.findByIdOptional(id)         // Optional&lt;Entity&gt;  -&gt; .orElseThrow(() -&gt; new NotFoundException(&quot;...&quot;))
+repo.listAll() / listAll(Sort.by(&quot;name&quot;))
+repo.count()  / count(&quot;field&quot;, value)
+repo.persist(entity)              // braucht @Transactional
+repo.deleteById(id)               // boolean: true wenn gelöscht
+repo.delete(entity)
+repo.delete(&quot;voyage.id&quot;, id)      // long: Anzahl gelöscht
+repo.update(&quot;set weightKg = ?1 where id = ?2&quot;, 100.0, id)
+repo.find(&quot;climacteric&quot;, true).page(Page.of(0, 10)).list()   // Paging
+repo.getEntityManager()           // für TypedQuery / NamedQuery / Native</code></pre></div></article><article class="card" id="typed" data-search="aufgabe 1 – typedquery (summe einer reise) typedquery typed query jpql sum coalesce getsingleresult double long count avg max createquery typedquery&amp;lt;t&amp;gt; = em.createquery(jpql, t.class) . ergebnis-typ muss passen: sum(double-feld) → double , sum(int/long-feld) → long count(...) → long , avg(...) → double , max/min → feldtyp sum ohne zeilen = null → deshalb coalesce(sum(x), 0.0) (bzw. 0 bei long) navigation über beziehungen mit punkt: ci.container.voyage.id (impliziter join). lösung cargoitemrepository.totalweightbyvoyage public double totalweightbyvoyage(long voyageid) { typedquery&lt;double&gt; query = getentitymanager().createquery(&quot;&quot;&quot; select coalesce(sum(ci.weightkg), 0.0) from cargoitem ci where ci.container.voyage.id = :voyageid &quot;&quot;&quot;, double.class); query.setparameter(&quot;voyageid&quot;, voyageid); return query.getsingleresult(); } varianten (count, avg, liste, optional) // anzahl long n = getentitymanager() .createquery(&quot;select count(c) from container c where c.voyage.id = :id&quot;, long.class) .setparameter(&quot;id&quot;, voyageid) .getsingleresult(); // durchschnitt (null wenn keine zeilen!) double avg = getentitymanager() .createquery(&quot;select avg(ci.weightkg) from cargoitem ci where ci.fruit.id = :id&quot;, double.class) .setparameter(&quot;id&quot;, fruitid) .getsingleresult(); // liste von entities list&lt;cargoitem&gt; items = getentitymanager() .createquery(&quot;select ci from cargoitem ci where ci.container.id = :id order by ci.weightkg desc&quot;, cargoitem.class) .setparameter(&quot;id&quot;, containerid) .getresultlist(); // höchstens ein ergebnis -&gt; optional (getsingleresult wirft noresultexception!) optional&lt;fruit&gt; f = getentitymanager() .createquery(&quot;select f from fruit f where f.name = :n&quot;, fruit.class) .setparameter(&quot;n&quot;, name) .getresultstream().findfirst(); // liste von strings / skalaren list&lt;string&gt; names = getentitymanager() .createquery(&quot;select distinct ci.fruit.name from cargoitem ci where ci.container.voyage.id = :id order by 1&quot;, string.class) .setparameter(&quot;id&quot;, voyageid) .getresultlist();"><h3><a href="#typed">Aufgabe 1 – TypedQuery (Summe einer Reise)</a></h3><div class="body">
+<p><b>TypedQuery&lt;T&gt;</b> = <code>em.createQuery(jpql, T.class)</code>. Ergebnis-Typ muss passen:</p>
+<ul>
+<li><code>sum(double-Feld)</code> → <code>Double</code>, <code>sum(int/long-Feld)</code> → <code>Long</code></li>
+<li><code>count(...)</code> → <code>Long</code>, <code>avg(...)</code> → <code>Double</code>, <code>max/min</code> → Feldtyp</li>
+<li><code>sum</code> ohne Zeilen = <code>null</code> → deshalb <code>coalesce(sum(x), 0.0)</code> (bzw. <code>0</code> bei Long)</li>
+</ul>
+<p>Navigation über Beziehungen mit Punkt: <code>ci.container.voyage.id</code> (impliziter Join).</p>
+</div><div class="code"><div class="code-head"><span>Lösung CargoItemRepository.totalWeightByVoyage</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">public double totalWeightByVoyage(long voyageId) {
+    TypedQuery&lt;Double&gt; query = getEntityManager().createQuery(&quot;&quot;&quot;
+            select coalesce(sum(ci.weightKg), 0.0)
+            from CargoItem ci
+            where ci.container.voyage.id = :voyageId
+            &quot;&quot;&quot;, Double.class);
+    query.setParameter(&quot;voyageId&quot;, voyageId);
+    return query.getSingleResult();
+}</code></pre></div><div class="code"><div class="code-head"><span>Varianten (count, avg, Liste, Optional)</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">// Anzahl
+Long n = getEntityManager()
+        .createQuery(&quot;select count(c) from Container c where c.voyage.id = :id&quot;, Long.class)
+        .setParameter(&quot;id&quot;, voyageId)
+        .getSingleResult();
+
+// Durchschnitt (null wenn keine Zeilen!)
+Double avg = getEntityManager()
+        .createQuery(&quot;select avg(ci.weightKg) from CargoItem ci where ci.fruit.id = :id&quot;, Double.class)
+        .setParameter(&quot;id&quot;, fruitId)
+        .getSingleResult();
+
+// Liste von Entities
+List&lt;CargoItem&gt; items = getEntityManager()
+        .createQuery(&quot;select ci from CargoItem ci where ci.container.id = :id order by ci.weightKg desc&quot;, CargoItem.class)
+        .setParameter(&quot;id&quot;, containerId)
+        .getResultList();
+
+// höchstens ein Ergebnis -&gt; Optional (getSingleResult wirft NoResultException!)
+Optional&lt;Fruit&gt; f = getEntityManager()
+        .createQuery(&quot;select f from Fruit f where f.name = :n&quot;, Fruit.class)
+        .setParameter(&quot;n&quot;, name)
+        .getResultStream().findFirst();
+
+// Liste von Strings / Skalaren
+List&lt;String&gt; names = getEntityManager()
+        .createQuery(&quot;select distinct ci.fruit.name from CargoItem ci where ci.container.voyage.id = :id order by 1&quot;, String.class)
+        .setParameter(&quot;id&quot;, voyageId)
+        .getResultList();</code></pre></div></article><article class="card" id="named" data-search="aufgabe 2 – @namedquery + konstruktor-ausdruck (dto-projektion) namedquery named query namedqueries konstruktor constructor expression select new dto projektion group by order by createnamedquery record @namedquery kommt auf die entity (unter @entity / @table ). konstruktor-ausdruck braucht den voll qualifizierten klassennamen : select new at.htl....dto.fruitweightdto(...) . reihenfolge &amp;amp; typen der argumente = konstruktor des records ( sum(double) = double ✔, count = long !). aufruf: em.createnamedquery(name, dto.class) → ist automatisch typisiert. name als konstante → kein tippfehler. entity cargoitem (annotation) @entity @table(name = &quot;cargo_items&quot;) @namedquery(name = cargoitem.weight_per_fruit, query = &quot;&quot;&quot; select new at.htl.fruitshipping.entity.dto.fruitweightdto(ci.fruit.name, sum(ci.weightkg)) from cargoitem ci where ci.container.voyage.id = :voyageid group by ci.fruit.name order by sum(ci.weightkg) desc &quot;&quot;&quot;) public class cargoitem { public static final string weight_per_fruit = &quot;cargoitem.weightperfruit&quot;; // ... felder wie vorgegeben } repository public list&lt;fruitweightdto&gt; weightperfruit(long voyageid) { return getentitymanager() .createnamedquery(cargoitem.weight_per_fruit, fruitweightdto.class) .setparameter(&quot;voyageid&quot;, voyageid) .getresultlist(); } mehrere named queries + panache-aufruf @entity @namedqueries({ @namedquery(name = &quot;container.byvoyage&quot;, query = &quot;select c from container c where c.voyage.id = :voyageid order by c.containernumber&quot;), @namedquery(name = &quot;container.countbyvoyage&quot;, query = &quot;select count(c) from container c where c.voyage.id = :voyageid&quot;) }) public class container { ... } // panache kann named queries mit &#x27;#&#x27; aufrufen (nur für entity-ergebnisse sinnvoll): list&lt;container&gt; list = find(&quot;#container.byvoyage&quot;, parameters.with(&quot;voyageid&quot;, id)).list(); // für skalare/dtos immer den entitymanager: long n = getentitymanager().createnamedquery(&quot;container.countbyvoyage&quot;, long.class) .setparameter(&quot;voyageid&quot;, id).getsingleresult(); dto-projektion mit count (long!) public record fruitcountdto(string fruitname, long count) {} select new at.htl.fruitshipping.entity.dto.fruitcountdto(ci.fruit.name, count(ci)) from cargoitem ci group by ci.fruit.name order by count(ci) desc, ci.fruit.name"><h3><a href="#named">Aufgabe 2 – @NamedQuery + Konstruktor-Ausdruck (DTO-Projektion)</a></h3><div class="body">
+<ul>
+<li><code>@NamedQuery</code> kommt <b>auf die Entity</b> (unter <code>@Entity</code>/<code>@Table</code>).</li>
+<li>Konstruktor-Ausdruck braucht den <b>voll qualifizierten Klassennamen</b>: <code>select new at.htl....dto.FruitWeightDto(...)</code>.</li>
+<li>Reihenfolge &amp; Typen der Argumente = Konstruktor des Records (<code>sum(double)</code> = <code>double</code> ✔, <code>count</code> = <code>long</code>!).</li>
+<li>Aufruf: <code>em.createNamedQuery(NAME, Dto.class)</code> → ist automatisch typisiert.</li>
+<li>Name als Konstante → kein Tippfehler.</li>
+</ul>
+</div><div class="code"><div class="code-head"><span>Entity CargoItem (Annotation)</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">@Entity
+@Table(name = &quot;CARGO_ITEMS&quot;)
+@NamedQuery(name = CargoItem.WEIGHT_PER_FRUIT, query = &quot;&quot;&quot;
+        select new at.htl.fruitshipping.entity.dto.FruitWeightDto(ci.fruit.name, sum(ci.weightKg))
+        from CargoItem ci
+        where ci.container.voyage.id = :voyageId
+        group by ci.fruit.name
+        order by sum(ci.weightKg) desc
+        &quot;&quot;&quot;)
+public class CargoItem {
+
+    public static final String WEIGHT_PER_FRUIT = &quot;CargoItem.weightPerFruit&quot;;
+    // ... Felder wie vorgegeben
+}</code></pre></div><div class="code"><div class="code-head"><span>Repository</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">public List&lt;FruitWeightDto&gt; weightPerFruit(long voyageId) {
+    return getEntityManager()
+            .createNamedQuery(CargoItem.WEIGHT_PER_FRUIT, FruitWeightDto.class)
+            .setParameter(&quot;voyageId&quot;, voyageId)
+            .getResultList();
+}</code></pre></div><div class="code"><div class="code-head"><span>Mehrere Named Queries + Panache-Aufruf</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">@Entity
+@NamedQueries({
+    @NamedQuery(name = &quot;Container.byVoyage&quot;,
+                query = &quot;select c from Container c where c.voyage.id = :voyageId order by c.containerNumber&quot;),
+    @NamedQuery(name = &quot;Container.countByVoyage&quot;,
+                query = &quot;select count(c) from Container c where c.voyage.id = :voyageId&quot;)
+})
+public class Container { ... }
+
+// Panache kann Named Queries mit &#x27;#&#x27; aufrufen (nur für Entity-Ergebnisse sinnvoll):
+List&lt;Container&gt; list = find(&quot;#Container.byVoyage&quot;, Parameters.with(&quot;voyageId&quot;, id)).list();
+
+// Für Skalare/DTOs immer den EntityManager:
+Long n = getEntityManager().createNamedQuery(&quot;Container.countByVoyage&quot;, Long.class)
+        .setParameter(&quot;voyageId&quot;, id).getSingleResult();</code></pre></div><div class="code"><div class="code-head"><span>DTO-Projektion mit count (long!)</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">public record FruitCountDto(String fruitName, long count) {}
+
+select new at.htl.fruitshipping.entity.dto.FruitCountDto(ci.fruit.name, count(ci))
+from CargoItem ci
+group by ci.fruit.name
+order by count(ci) desc, ci.fruit.name</code></pre></div></article><article class="card" id="having" data-search="aufgabe 3 – left join + group by + having left join group by having coalesce sum leere container freie kapazitaet jpql entity left join , damit auch container ohne ladung (leer) im ergebnis bleiben. bei leeren containern ist sum(ci.weightkg) = null → coalesce(..., 0) . bedingungen auf aggregate ( sum , count ) gehören in having , nicht in where . group by c (ganze entity) funktioniert in hibernate 6/7. „mindestens“ = &amp;gt;= (test limitisinclusive ). lösung containerrepository.findwithfreecapacity public list&lt;container&gt; findwithfreecapacity(long voyageid, double minfreekg) { return getentitymanager().createquery(&quot;&quot;&quot; select c from container c left join c.cargoitems ci where c.voyage.id = :voyageid group by c having c.capacitykg - coalesce(sum(ci.weightkg), 0) &gt;= :minfreekg order by c.containernumber &quot;&quot;&quot;, container.class) .setparameter(&quot;voyageid&quot;, voyageid) .setparameter(&quot;minfreekg&quot;, minfreekg) .getresultlist(); } varianten // container mit mindestens n ladungsposten select c from container c join c.cargoitems ci where c.voyage.id = :id group by c having count(ci) &gt;= :n // leere container (ohne join!) select c from container c where c.voyage.id = :id and c.cargoitems is empty // oder: and size(c.cargoitems) = 0 // reisen, auf denen eine bestimmte frucht geladen ist (subquery) select v from voyage v where exists ( select ci from cargoitem ci where ci.container.voyage = v and ci.fruit.id = :fruitid) // gesamtgewicht pro container als dto (leere mit 0) select new at.htl.x.dto.containerweightdto(c.containernumber, coalesce(sum(ci.weightkg), 0)) from container c left join c.cargoitems ci group by c.containernumber order by c.containernumber"><h3><a href="#having">Aufgabe 3 – left join + group by + having</a></h3><div class="body">
+<ul>
+<li><b>left join</b>, damit auch Container <b>ohne</b> Ladung (leer) im Ergebnis bleiben.</li>
+<li>Bei leeren Containern ist <code>sum(ci.weightKg)</code> = <code>null</code> → <code>coalesce(..., 0)</code>.</li>
+<li>Bedingungen auf Aggregate (<code>sum</code>, <code>count</code>) gehören in <b>having</b>, nicht in <code>where</code>.</li>
+<li><code>group by c</code> (ganze Entity) funktioniert in Hibernate 6/7.</li>
+<li>„mindestens“ = <code>&gt;=</code> (Test <code>limitIsInclusive</code>).</li>
+</ul>
+</div><div class="code"><div class="code-head"><span>Lösung ContainerRepository.findWithFreeCapacity</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">public List&lt;Container&gt; findWithFreeCapacity(long voyageId, double minFreeKg) {
+    return getEntityManager().createQuery(&quot;&quot;&quot;
+                    select c from Container c
+                    left join c.cargoItems ci
+                    where c.voyage.id = :voyageId
+                    group by c
+                    having c.capacityKg - coalesce(sum(ci.weightKg), 0) &gt;= :minFreeKg
+                    order by c.containerNumber
+                    &quot;&quot;&quot;, Container.class)
+            .setParameter(&quot;voyageId&quot;, voyageId)
+            .setParameter(&quot;minFreeKg&quot;, minFreeKg)
+            .getResultList();
+}</code></pre></div><div class="code"><div class="code-head"><span>Varianten</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">// Container mit mindestens N Ladungsposten
+select c from Container c join c.cargoItems ci
+where c.voyage.id = :id
+group by c having count(ci) &gt;= :n
+
+// leere Container (ohne join!)
+select c from Container c where c.voyage.id = :id and c.cargoItems is empty
+// oder: and size(c.cargoItems) = 0
+
+// Reisen, auf denen eine bestimmte Frucht geladen ist (Subquery)
+select v from Voyage v where exists (
+    select ci from CargoItem ci where ci.container.voyage = v and ci.fruit.id = :fruitId)
+
+// Gesamtgewicht pro Container als DTO (leere mit 0)
+select new at.htl.x.dto.ContainerWeightDto(c.containerNumber, coalesce(sum(ci.weightKg), 0))
+from Container c left join c.cargoItems ci
+group by c.containerNumber order by c.containerNumber</code></pre></div></article><article class="card" id="native" data-search="aufgabe 4 – native sql query native sql createnativequery object[] number longvalue count distinct case when tabellen spalten snake_case h2 em.createnativequery(sql) – echtes sql: tabellen- &amp;amp; spaltennamen der db ( containers , container_id , voyage_id …), siehe @table / @column / @joincolumn . mehrere spalten → object[] ; zahlen immer über ((number) x).longvalue() casten (h2 liefert long, andere dbs biginteger/integer). count(...) liefert bei 0 zeilen 0 (nicht null) → keine sonderbehandlung nötig. „container zählen, nicht ladungsposten“ → count(distinct c.id) . lösung containerrepository.countbycategory public categorycountdto countbycategory(long voyageid) { object[] row = (object[]) getentitymanager().createnativequery(&quot;&quot;&quot; select count(distinct case when f.climacteric then c.id end), count(distinct case when not f.climacteric then c.id end) from containers c join cargo_items ci on ci.container_id = c.id join fruits f on f.id = ci.fruit_id where c.voyage_id = :voyageid &quot;&quot;&quot;) .setparameter(&quot;voyageid&quot;, voyageid) .getsingleresult(); return new categorycountdto(((number) row[0]).longvalue(), ((number) row[1]).longvalue()); } varianten: ein wert / mehrere zeilen / entities // ein einzelner wert long n = ((number) getentitymanager() .createnativequery(&quot;select count(*) from containers where voyage_id = :id&quot;) .setparameter(&quot;id&quot;, voyageid) .getsingleresult()).longvalue(); // mehrere zeilen -&gt; dto-liste @suppresswarnings(&quot;unchecked&quot;) list&lt;object[]&gt; rows = getentitymanager().createnativequery(&quot;&quot;&quot; select f.name, sum(ci.weight_kg) from cargo_items ci join fruits f on f.id = ci.fruit_id group by f.name order by 2 desc &quot;&quot;&quot;).getresultlist(); return rows.stream() .map(r -&gt; new fruitweightdto((string) r[0], ((number) r[1]).doublevalue())) .tolist(); // entities per nativem sql list&lt;container&gt; list = getentitymanager() .createnativequery(&quot;select * from containers where voyage_id = :id order by container_number&quot;, container.class) .setparameter(&quot;id&quot;, voyageid) .getresultlist(); // alternative zu case: sum(case when f.climacteric then 1 else 0 end) -&gt; null bei 0 zeilen, coalesce!"><h3><a href="#native">Aufgabe 4 – Native SQL Query</a></h3><div class="body">
+<ul>
+<li><code>em.createNativeQuery(sql)</code> – echtes SQL: <b>Tabellen- &amp; Spaltennamen der DB</b> (<code>CONTAINERS</code>, <code>container_id</code>, <code>voyage_id</code>…), siehe <code>@Table</code>/<code>@Column</code>/<code>@JoinColumn</code>.</li>
+<li>Mehrere Spalten → <code>Object[]</code>; Zahlen immer über <code>((Number) x).longValue()</code> casten (H2 liefert Long, andere DBs BigInteger/Integer).</li>
+<li><code>count(...)</code> liefert bei 0 Zeilen <b>0</b> (nicht null) → keine Sonderbehandlung nötig.</li>
+<li>„Container zählen, nicht Ladungsposten“ → <code>count(distinct c.id)</code>.</li>
+</ul>
+</div><div class="code"><div class="code-head"><span>Lösung ContainerRepository.countByCategory</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">public CategoryCountDto countByCategory(long voyageId) {
+    Object[] row = (Object[]) getEntityManager().createNativeQuery(&quot;&quot;&quot;
+                    select count(distinct case when f.climacteric then c.id end),
+                           count(distinct case when not f.climacteric then c.id end)
+                    from CONTAINERS c
+                    join CARGO_ITEMS ci on ci.container_id = c.id
+                    join FRUITS f on f.id = ci.fruit_id
+                    where c.voyage_id = :voyageId
+                    &quot;&quot;&quot;)
+            .setParameter(&quot;voyageId&quot;, voyageId)
+            .getSingleResult();
+    return new CategoryCountDto(((Number) row[0]).longValue(), ((Number) row[1]).longValue());
+}</code></pre></div><div class="code"><div class="code-head"><span>Varianten: ein Wert / mehrere Zeilen / Entities</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">// ein einzelner Wert
+long n = ((Number) getEntityManager()
+        .createNativeQuery(&quot;select count(*) from CONTAINERS where voyage_id = :id&quot;)
+        .setParameter(&quot;id&quot;, voyageId)
+        .getSingleResult()).longValue();
+
+// mehrere Zeilen -&gt; DTO-Liste
+@SuppressWarnings(&quot;unchecked&quot;)
+List&lt;Object[]&gt; rows = getEntityManager().createNativeQuery(&quot;&quot;&quot;
+        select f.name, sum(ci.weight_kg)
+        from CARGO_ITEMS ci join FRUITS f on f.id = ci.fruit_id
+        group by f.name order by 2 desc
+        &quot;&quot;&quot;).getResultList();
+return rows.stream()
+        .map(r -&gt; new FruitWeightDto((String) r[0], ((Number) r[1]).doubleValue()))
+        .toList();
+
+// Entities per nativem SQL
+List&lt;Container&gt; list = getEntityManager()
+        .createNativeQuery(&quot;select * from CONTAINERS where voyage_id = :id order by container_number&quot;, Container.class)
+        .setParameter(&quot;id&quot;, voyageId)
+        .getResultList();
+
+// Alternative zu case: sum(case when f.climacteric then 1 else 0 end)  -&gt; null bei 0 Zeilen, coalesce!</code></pre></div></article><article class="card" id="jpqlref" data-search="jpql kurzreferenz – funktionen &amp; syntax jpql referenz syntax funktionen like lower upper concat between in is null is empty size member of case when distinct order by exists current_date extract was jpql parameter :name (named) oder ?1 (positional) – nicht mischen join join c.cargoitems ci , left join , join fetch (gegen n+1) pfad ci.container.voyage.shipname text lower(x) like :p , upper , concat(a,&#x27; &#x27;,b) , length , trim bereich x between :a and :b , x in (:list) , x not in null is null , is not null , coalesce(x, 0) collections c.cargoitems is empty , size(c.cargoitems) , :item member of c.cargoitems aggregate count(x) , count(distinct x) , sum , avg , min , max bedingung case when a then 1 else 0 end datum current_date , v.departuredate &amp;gt;= :from , extract(year from d) subquery exists (select ...) , x &amp;gt; (select avg(...) ...) sortierung order by sum(x) desc, f.name limit query.setmaxresults(5) (bzw. jpql limit 5 in hibernate 6+) "><h3><a href="#jpqlref">JPQL Kurzreferenz – Funktionen &amp; Syntax</a></h3><div class="body">
+<table class="tbl">
+<tr><th>Was</th><th>JPQL</th></tr>
+<tr><td>Parameter</td><td><code>:name</code> (named) oder <code>?1</code> (positional) – nicht mischen</td></tr>
+<tr><td>Join</td><td><code>join c.cargoItems ci</code>, <code>left join</code>, <code>join fetch</code> (gegen N+1)</td></tr>
+<tr><td>Pfad</td><td><code>ci.container.voyage.shipName</code></td></tr>
+<tr><td>Text</td><td><code>lower(x) like :p</code>, <code>upper</code>, <code>concat(a,' ',b)</code>, <code>length</code>, <code>trim</code></td></tr>
+<tr><td>Bereich</td><td><code>x between :a and :b</code>, <code>x in (:list)</code>, <code>x not in</code></td></tr>
+<tr><td>Null</td><td><code>is null</code>, <code>is not null</code>, <code>coalesce(x, 0)</code></td></tr>
+<tr><td>Collections</td><td><code>c.cargoItems is empty</code>, <code>size(c.cargoItems)</code>, <code>:item member of c.cargoItems</code></td></tr>
+<tr><td>Aggregate</td><td><code>count(x)</code>, <code>count(distinct x)</code>, <code>sum</code>, <code>avg</code>, <code>min</code>, <code>max</code></td></tr>
+<tr><td>Bedingung</td><td><code>case when a then 1 else 0 end</code></td></tr>
+<tr><td>Datum</td><td><code>current_date</code>, <code>v.departureDate &gt;= :from</code>, <code>extract(year from d)</code></td></tr>
+<tr><td>Subquery</td><td><code>exists (select ...)</code>, <code>x &gt; (select avg(...) ...)</code></td></tr>
+<tr><td>Sortierung</td><td><code>order by sum(x) desc, f.name</code></td></tr>
+<tr><td>Limit</td><td><code>query.setMaxResults(5)</code> (bzw. JPQL <code>limit 5</code> in Hibernate 6+)</td></tr>
+</table>
+</div></article></section>
+<section class="cat" data-cat="logic"><h2>Geschäftslogik</h2><article class="card" id="service" data-search="aufgabe 5 – service mit regeln in fixer reihenfolge service geschaeftslogik regeln reihenfolge notfoundexception badrequestexception transactional persist exception temperatur ueberlappung kapazitaet klimakterisch muster: jede regel = ein if + throw , genau in der reihenfolge der angabe. erst ganz am ende persist , dann wird bei fehler nichts gespeichert. existenz → findbyidoptional(..).orelsethrow(() -&amp;gt; new notfoundexception(&quot;...&quot;)) (404) eingabe → badrequestexception (400) fachregeln → eigene exceptions ( extends cargoruleexception → 409) überlappung von bereichen: alle bereiche überlappen ⇔ max(alle min) &amp;lt;= min(alle max) . bidirektionale beziehung: nach persist auch container.getcargoitems().add(item) – sonst stimmt getloadedkg() in derselben transaktion nicht. zahlen in meldungen: %.1f nutzt gebietsschema (de → -1,0 )! double per %s ergibt immer -1.0 . lösung cargoservice.loadcargo @transactional public cargoitem loadcargo(long containerid, cargoitemcreatedto dto) { // 1. existence -&gt; 404 container container = containerrepository.findbyidoptional(containerid) .orelsethrow(() -&gt; new notfoundexception(&quot;container &quot; + containerid + &quot; not found&quot;)); fruit fruit = fruitrepository.findbyidoptional(dto.fruitid()) .orelsethrow(() -&gt; new notfoundexception(&quot;fruit &quot; + dto.fruitid() + &quot; not found&quot;)); // 2. weight &gt; 0 -&gt; 400 if (dto.weightkg() == null || dto.weightkg() &lt;= 0) { throw new badrequestexception(&quot;weight must be greater than 0 kg&quot;); } // 3. climacteric separation -&gt; 409 (empty container: getclimacteric() == null) boolean containerclimacteric = container.getclimacteric(); if (containerclimacteric != null &amp;&amp; containerclimacteric != fruit.isclimacteric()) { throw new incompatiblecargoexception(&quot;%s is %s, but container %s holds %s fruits&quot;.formatted( fruit.getname(), category(fruit.isclimacteric()), container.getcontainernumber(), category(containerclimacteric))); } // 4. temperature ranges must overlap: highest minimum &lt;= lowest maximum double highestmin = fruit.getmintemperature(); double lowestmax = fruit.getmaxtemperature(); for (cargoitem item : container.getcargoitems()) { highestmin = math.max(highestmin, item.getfruit().getmintemperature()); lowestmax = math.min(lowestmax, item.getfruit().getmaxtemperature()); } if (highestmin &gt; lowestmax) { throw new temperatureconflictexception(&quot;%s (%s to %s °c) does not fit the temperature range of container %s&quot; .formatted(fruit.getname(), fruit.getmintemperature(), fruit.getmaxtemperature(), container.getcontainernumber())); } // 5. capacity (exactly full is allowed) -&gt; 409 if (dto.weightkg() &gt; container.getfreekg()) { throw new capacityexceededexception(&quot;%.0f kg do not fit into container %s (free: %.0f kg)&quot; .formatted(dto.weightkg(), container.getcontainernumber(), container.getfreekg())); } cargoitem cargoitem = new cargoitem(dto.weightkg(), dto.origincountry(), container, fruit); cargoitemrepository.persist(cargoitem); container.getcargoitems().add(cargoitem); // keep the bidirectional relation in sync return cargoitem; } private static string category(boolean climacteric) { return climacteric ? &quot;climacteric&quot; : &quot;non-climacteric&quot;; }"><h3><a href="#service">Aufgabe 5 – Service mit Regeln in fixer Reihenfolge</a></h3><div class="body">
+<p>Muster: <b>jede Regel = ein <code>if</code> + <code>throw</code></b>, genau in der Reihenfolge der Angabe. Erst ganz am Ende <code>persist</code>, dann wird bei Fehler nichts gespeichert.</p>
+<ol>
+<li>Existenz → <code>findByIdOptional(..).orElseThrow(() -&gt; new NotFoundException("..."))</code> (404)</li>
+<li>Eingabe → <code>BadRequestException</code> (400)</li>
+<li>Fachregeln → eigene Exceptions (<code>extends CargoRuleException</code> → 409)</li>
+</ol>
+<div class="warn"><b>Überlappung von Bereichen:</b> alle Bereiche überlappen ⇔ <code>max(alle min) &lt;= min(alle max)</code>.<br>
+<b>Bidirektionale Beziehung:</b> nach <code>persist</code> auch <code>container.getCargoItems().add(item)</code> – sonst stimmt <code>getLoadedKg()</code> in derselben Transaktion nicht.<br>
+<b>Zahlen in Meldungen:</b> <code>%.1f</code> nutzt Gebietsschema (DE → <code>-1,0</code>)! Double per <code>%s</code> ergibt immer <code>-1.0</code>.</div>
+</div><div class="code"><div class="code-head"><span>Lösung CargoService.loadCargo</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">@Transactional
+public CargoItem loadCargo(long containerId, CargoItemCreateDto dto) {
+    // 1. existence -&gt; 404
+    Container container = containerRepository.findByIdOptional(containerId)
+            .orElseThrow(() -&gt; new NotFoundException(&quot;Container &quot; + containerId + &quot; not found&quot;));
+    Fruit fruit = fruitRepository.findByIdOptional(dto.fruitId())
+            .orElseThrow(() -&gt; new NotFoundException(&quot;Fruit &quot; + dto.fruitId() + &quot; not found&quot;));
+
+    // 2. weight &gt; 0 -&gt; 400
+    if (dto.weightKg() == null || dto.weightKg() &lt;= 0) {
+        throw new BadRequestException(&quot;Weight must be greater than 0 kg&quot;);
+    }
+
+    // 3. climacteric separation -&gt; 409 (empty container: getClimacteric() == null)
+    Boolean containerClimacteric = container.getClimacteric();
+    if (containerClimacteric != null &amp;&amp; containerClimacteric != fruit.isClimacteric()) {
+        throw new IncompatibleCargoException(&quot;%s is %s, but container %s holds %s fruits&quot;.formatted(
+                fruit.getName(), category(fruit.isClimacteric()),
+                container.getContainerNumber(), category(containerClimacteric)));
+    }
+
+    // 4. temperature ranges must overlap: highest minimum &lt;= lowest maximum
+    double highestMin = fruit.getMinTemperature();
+    double lowestMax = fruit.getMaxTemperature();
+    for (CargoItem item : container.getCargoItems()) {
+        highestMin = Math.max(highestMin, item.getFruit().getMinTemperature());
+        lowestMax = Math.min(lowestMax, item.getFruit().getMaxTemperature());
+    }
+    if (highestMin &gt; lowestMax) {
+        throw new TemperatureConflictException(&quot;%s (%s to %s °C) does not fit the temperature range of container %s&quot;
+                .formatted(fruit.getName(), fruit.getMinTemperature(), fruit.getMaxTemperature(),
+                        container.getContainerNumber()));
+    }
+
+    // 5. capacity (exactly full is allowed) -&gt; 409
+    if (dto.weightKg() &gt; container.getFreeKg()) {
+        throw new CapacityExceededException(&quot;%.0f kg do not fit into container %s (free: %.0f kg)&quot;
+                .formatted(dto.weightKg(), container.getContainerNumber(), container.getFreeKg()));
+    }
+
+    CargoItem cargoItem = new CargoItem(dto.weightKg(), dto.originCountry(), container, fruit);
+    cargoItemRepository.persist(cargoItem);
+    container.getCargoItems().add(cargoItem); // keep the bidirectional relation in sync
+    return cargoItem;
+}
+
+private static String category(boolean climacteric) {
+    return climacteric ? &quot;climacteric&quot; : &quot;non-climacteric&quot;;
+}</code></pre></div></article><article class="card" id="exceptions" data-search="eigene exceptions (hierarchie) exception eigene runtimeexception abstract 409 conflict hierarchie eine abstrakte basisklasse → ein mapper für alle 409-fehler. exceptions public abstract class cargoruleexception extends runtimeexception { protected cargoruleexception(string message) { super(message); } } public class capacityexceededexception extends cargoruleexception { public capacityexceededexception(string message) { super(message); } } // incompatiblecargoexception, temperatureconflictexception analog"><h3><a href="#exceptions">Eigene Exceptions (Hierarchie)</a></h3><div class="body"><p>Eine abstrakte Basisklasse → ein Mapper für alle 409-Fehler.</p></div><div class="code"><div class="code-head"><span>Exceptions</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">public abstract class CargoRuleException extends RuntimeException {
+    protected CargoRuleException(String message) { super(message); }
+}
+
+public class CapacityExceededException extends CargoRuleException {
+    public CapacityExceededException(String message) { super(message); }
+}
+// IncompatibleCargoException, TemperatureConflictException analog</code></pre></div></article></section>
+<section class="cat" data-cat="rest"><h2>REST</h2><article class="card" id="resource" data-search="aufgabe 6 – rest-ressourcen (get / post 201 / delete 204) rest resource path get post delete put pathparam queryparam response created location uriinfo nocontent dto mapper produces consumes valid basis-pfad /api kommt aus quarkus.rest.path=/api → in @path nur &quot;voyages&quot; . nie entities zurückgeben → .stream().map(dtomapper::todto).tolist() . unbekannte id → throw new notfoundexception(&quot;voyage &quot; + id + &quot; not found&quot;) (text exakt wie in tests). post: response.created(uri).entity(dto).build() → 201 + location . delete: @transactional , deletebyid liefert boolean → 204 oder 404. @valid vor dem body-parameter → bean-validation ( @notnull , @notblank …) → 400. voyageresource (get + statistik + 404) package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.cargoitemrepository; import at.htl.fruitshipping.control.containerrepository; import at.htl.fruitshipping.control.voyagerepository; import at.htl.fruitshipping.entity.dto.containerdto; import at.htl.fruitshipping.entity.dto.dtomapper; import at.htl.fruitshipping.entity.dto.voyagedto; import at.htl.fruitshipping.entity.dto.voyagestatisticsdto; import jakarta.inject.inject; import jakarta.ws.rs.get; import jakarta.ws.rs.notfoundexception; import jakarta.ws.rs.path; import jakarta.ws.rs.pathparam; import jakarta.ws.rs.produces; import jakarta.ws.rs.core.mediatype; import java.util.list; @path(&quot;voyages&quot;) @produces(mediatype.application_json) public class voyageresource { @inject voyagerepository voyagerepository; @inject containerrepository containerrepository; @inject cargoitemrepository cargoitemrepository; @get public list&lt;voyagedto&gt; getall() { return voyagerepository.findallorderedbydeparture().stream().map(dtomapper::todto).tolist(); } @get @path(&quot;{id}/containers&quot;) public list&lt;containerdto&gt; getcontainers(@pathparam(&quot;id&quot;) long id) { requirevoyage(id); return containerrepository.findbyvoyage(id).stream().map(dtomapper::todto).tolist(); } @get @path(&quot;{id}/statistics&quot;) public voyagestatisticsdto getstatistics(@pathparam(&quot;id&quot;) long id) { requirevoyage(id); return new voyagestatisticsdto(id, cargoitemrepository.totalweightbyvoyage(id), cargoitemrepository.weightperfruit(id), containerrepository.countbycategory(id)); } private void requirevoyage(long id) { if (voyagerepository.findbyidoptional(id).isempty()) { throw new notfoundexception(&quot;voyage &quot; + id + &quot; not found&quot;); } } } containerresource (post → 201 + location) package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.cargoservice; import at.htl.fruitshipping.entity.cargoitem; import at.htl.fruitshipping.entity.dto.cargoitemcreatedto; import at.htl.fruitshipping.entity.dto.dtomapper; import jakarta.inject.inject; import jakarta.validation.valid; import jakarta.validation.constraints.notnull; import jakarta.ws.rs.consumes; import jakarta.ws.rs.post; import jakarta.ws.rs.path; import jakarta.ws.rs.pathparam; import jakarta.ws.rs.produces; import jakarta.ws.rs.core.context; import jakarta.ws.rs.core.mediatype; import jakarta.ws.rs.core.response; import jakarta.ws.rs.core.uriinfo; import java.net.uri; @path(&quot;containers&quot;) @produces(mediatype.application_json) @consumes(mediatype.application_json) public class containerresource { @inject cargoservice cargoservice; @post @path(&quot;{id}/cargo-items&quot;) public response loadcargo(@pathparam(&quot;id&quot;) long id, @valid @notnull cargoitemcreatedto dto, @context uriinfo uriinfo) { cargoitem item = cargoservice.loadcargo(id, dto); uri location = uriinfo.getbaseuribuilder() .path(cargoitemresource.class) .path(string.valueof(item.getid())) .build(); return response.created(location).entity(dtomapper.todto(item)).build(); } } cargoitemresource (get by id / delete 204) package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.cargoitemrepository; import at.htl.fruitshipping.entity.dto.cargoitemdto; import at.htl.fruitshipping.entity.dto.dtomapper; import jakarta.inject.inject; import jakarta.transaction.transactional; import jakarta.ws.rs.delete; import jakarta.ws.rs.get; import jakarta.ws.rs.notfoundexception; import jakarta.ws.rs.path; import jakarta.ws.rs.pathparam; import jakarta.ws.rs.produces; import jakarta.ws.rs.core.mediatype; import jakarta.ws.rs.core.response; @path(&quot;cargo-items&quot;) @produces(mediatype.application_json) public class cargoitemresource { @inject cargoitemrepository cargoitemrepository; @get @path(&quot;{id}&quot;) public cargoitemdto getbyid(@pathparam(&quot;id&quot;) long id) { return cargoitemrepository.findbyidoptional(id) .map(dtomapper::todto) .orelsethrow(() -&gt; notfound(id)); } @delete @path(&quot;{id}&quot;) @transactional public response delete(@pathparam(&quot;id&quot;) long id) { if (!cargoitemrepository.deletebyid(id)) { throw notfound(id); } return response.nocontent().build(); } private static notfoundexception notfound(long id) { return new notfoundexception(&quot;cargo item &quot; + id + &quot; not found&quot;); } } weitere muster: @queryparam, put, restresponse @get public list&lt;fruitdto&gt; getall(@queryparam(&quot;climacteric&quot;) boolean climacteric) { // /api/fruits?climacteric=true var fruits = climacteric == null ? repo.findallorderedbyname() : repo.findbyclimacteric(climacteric); return fruits.stream().map(dtomapper::todto).tolist(); } @put @path(&quot;{id}&quot;) @transactional public cargoitemdto update(@pathparam(&quot;id&quot;) long id, @valid cargoitemcreatedto dto) { cargoitem item = repo.findbyidoptional(id).orelsethrow(() -&gt; new notfoundexception(&quot;cargo item &quot; + id + &quot; not found&quot;)); item.setweightkg(dto.weightkg()); // managed entity -&gt; wird beim commit automatisch gespeichert return dtomapper.todto(item); } // alternative zu response: typisiert @post public restresponse&lt;cargoitemdto&gt; create(...) { return restresponse.created(uri.create(&quot;/api/cargo-items/&quot; + item.getid())); // ohne body // mit body: restresponse.responsebuilder.created(uri).entity(dto).build() }"><h3><a href="#resource">Aufgabe 6 – REST-Ressourcen (GET / POST 201 / DELETE 204)</a></h3><div class="body">
+<ul>
+<li>Basis-Pfad <code>/api</code> kommt aus <code>quarkus.rest.path=/api</code> → in <code>@Path</code> nur <code>"voyages"</code>.</li>
+<li><b>Nie Entities zurückgeben</b> → <code>.stream().map(DtoMapper::toDto).toList()</code>.</li>
+<li>Unbekannte ID → <code>throw new NotFoundException("Voyage " + id + " not found")</code> (Text exakt wie in Tests).</li>
+<li>POST: <code>Response.created(uri).entity(dto).build()</code> → 201 + <code>Location</code>.</li>
+<li>DELETE: <code>@Transactional</code>, <code>deleteById</code> liefert boolean → 204 oder 404.</li>
+<li><code>@Valid</code> vor dem Body-Parameter → Bean-Validation (<code>@NotNull</code>, <code>@NotBlank</code>…) → 400.</li>
+</ul>
+</div><div class="code"><div class="code-head"><span>VoyageResource (GET + Statistik + 404)</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.CargoItemRepository;
+import at.htl.fruitshipping.control.ContainerRepository;
+import at.htl.fruitshipping.control.VoyageRepository;
+import at.htl.fruitshipping.entity.dto.ContainerDto;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import at.htl.fruitshipping.entity.dto.VoyageDto;
+import at.htl.fruitshipping.entity.dto.VoyageStatisticsDto;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+
+import java.util.List;
+
+@Path(&quot;voyages&quot;)
+@Produces(MediaType.APPLICATION_JSON)
+public class VoyageResource {
+
+    @Inject
+    VoyageRepository voyageRepository;
+    @Inject
+    ContainerRepository containerRepository;
+    @Inject
+    CargoItemRepository cargoItemRepository;
+
+    @GET
+    public List&lt;VoyageDto&gt; getAll() {
+        return voyageRepository.findAllOrderedByDeparture().stream().map(DtoMapper::toDto).toList();
+    }
+
+    @GET
+    @Path(&quot;{id}/containers&quot;)
+    public List&lt;ContainerDto&gt; getContainers(@PathParam(&quot;id&quot;) long id) {
+        requireVoyage(id);
+        return containerRepository.findByVoyage(id).stream().map(DtoMapper::toDto).toList();
+    }
+
+    @GET
+    @Path(&quot;{id}/statistics&quot;)
+    public VoyageStatisticsDto getStatistics(@PathParam(&quot;id&quot;) long id) {
+        requireVoyage(id);
+        return new VoyageStatisticsDto(id,
+                cargoItemRepository.totalWeightByVoyage(id),
+                cargoItemRepository.weightPerFruit(id),
+                containerRepository.countByCategory(id));
+    }
+
+    private void requireVoyage(long id) {
+        if (voyageRepository.findByIdOptional(id).isEmpty()) {
+            throw new NotFoundException(&quot;Voyage &quot; + id + &quot; not found&quot;);
+        }
+    }
+}</code></pre></div><div class="code"><div class="code-head"><span>ContainerResource (POST → 201 + Location)</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.CargoService;
+import at.htl.fruitshipping.entity.CargoItem;
+import at.htl.fruitshipping.entity.dto.CargoItemCreateDto;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
+import java.net.URI;
+
+@Path(&quot;containers&quot;)
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class ContainerResource {
+
+    @Inject
+    CargoService cargoService;
+
+    @POST
+    @Path(&quot;{id}/cargo-items&quot;)
+    public Response loadCargo(@PathParam(&quot;id&quot;) long id, @Valid @NotNull CargoItemCreateDto dto, @Context UriInfo uriInfo) {
+        CargoItem item = cargoService.loadCargo(id, dto);
+        URI location = uriInfo.getBaseUriBuilder()
+                .path(CargoItemResource.class)
+                .path(String.valueOf(item.getId()))
+                .build();
+        return Response.created(location).entity(DtoMapper.toDto(item)).build();
+    }
+}</code></pre></div><div class="code"><div class="code-head"><span>CargoItemResource (GET by id / DELETE 204)</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.CargoItemRepository;
+import at.htl.fruitshipping.entity.dto.CargoItemDto;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+@Path(&quot;cargo-items&quot;)
+@Produces(MediaType.APPLICATION_JSON)
+public class CargoItemResource {
+
+    @Inject
+    CargoItemRepository cargoItemRepository;
+
+    @GET
+    @Path(&quot;{id}&quot;)
+    public CargoItemDto getById(@PathParam(&quot;id&quot;) long id) {
+        return cargoItemRepository.findByIdOptional(id)
+                .map(DtoMapper::toDto)
+                .orElseThrow(() -&gt; notFound(id));
+    }
+
+    @DELETE
+    @Path(&quot;{id}&quot;)
+    @Transactional
+    public Response delete(@PathParam(&quot;id&quot;) long id) {
+        if (!cargoItemRepository.deleteById(id)) {
+            throw notFound(id);
+        }
+        return Response.noContent().build();
+    }
+
+    private static NotFoundException notFound(long id) {
+        return new NotFoundException(&quot;Cargo item &quot; + id + &quot; not found&quot;);
+    }
+}</code></pre></div><div class="code"><div class="code-head"><span>Weitere Muster: @QueryParam, PUT, RestResponse</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">@GET
+public List&lt;FruitDto&gt; getAll(@QueryParam(&quot;climacteric&quot;) Boolean climacteric) {  // /api/fruits?climacteric=true
+    var fruits = climacteric == null ? repo.findAllOrderedByName() : repo.findByClimacteric(climacteric);
+    return fruits.stream().map(DtoMapper::toDto).toList();
+}
+
+@PUT
+@Path(&quot;{id}&quot;)
+@Transactional
+public CargoItemDto update(@PathParam(&quot;id&quot;) long id, @Valid CargoItemCreateDto dto) {
+    CargoItem item = repo.findByIdOptional(id).orElseThrow(() -&gt; new NotFoundException(&quot;Cargo item &quot; + id + &quot; not found&quot;));
+    item.setWeightKg(dto.weightKg());          // managed entity -&gt; wird beim Commit automatisch gespeichert
+    return DtoMapper.toDto(item);
+}
+
+// Alternative zu Response: typisiert
+@POST
+public RestResponse&lt;CargoItemDto&gt; create(...) {
+    return RestResponse.created(URI.create(&quot;/api/cargo-items/&quot; + item.getId()));   // ohne Body
+    // mit Body: RestResponse.ResponseBuilder.created(uri).entity(dto).build()
+}</code></pre></div></article><article class="card" id="mapper" data-search="fehlerbehandlung – @serverexceptionmapper → {&quot;message&quot;: &quot;...&quot;} exception mapper serverexceptionmapper errordto restresponse 404 400 409 constraintviolationexception bean validation fehler json eine klasse (z.b. exceptionmappers ) im boundary -package, je exception-typ eine methode. spezifischster typ gewinnt. bean-validation-text ist &quot;must not be null&quot; , der property-pfad z.b. loadcargo.dto.fruitid → letzter knoten = feldname → &quot;fruitid must not be null&quot; . exceptionmappers package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.exception.cargoruleexception; import at.htl.fruitshipping.entity.dto.errordto; import jakarta.validation.constraintviolation; import jakarta.validation.constraintviolationexception; import jakarta.validation.path; import jakarta.ws.rs.badrequestexception; import jakarta.ws.rs.notfoundexception; import jakarta.ws.rs.core.response; import org.jboss.resteasy.reactive.restresponse; import org.jboss.resteasy.reactive.server.serverexceptionmapper; /** every error is answered as {&quot;message&quot;: &quot;...&quot;} */ public class exceptionmappers { @serverexceptionmapper public restresponse&lt;errordto&gt; mapcargorule(cargoruleexception e) { return restresponse.status(response.status.conflict, new errordto(e.getmessage())); } @serverexceptionmapper public restresponse&lt;errordto&gt; mapnotfound(notfoundexception e) { return restresponse.status(response.status.not_found, new errordto(e.getmessage())); } @serverexceptionmapper public restresponse&lt;errordto&gt; mapbadrequest(badrequestexception e) { return restresponse.status(response.status.bad_request, new errordto(e.getmessage())); } /** bean validation, e.g. &quot;fruitid must not be null&quot; */ @serverexceptionmapper public restresponse&lt;errordto&gt; mapvalidation(constraintviolationexception e) { constraintviolation&lt;?&gt; violation = e.getconstraintviolations().iterator().next(); string field = null; for (path.node node : violation.getpropertypath()) { field = node.getname(); // last node = field name (path is &quot;loadcargo.dto.fruitid&quot;) } return restresponse.status(response.status.bad_request, new errordto(field + &quot; &quot; + violation.getmessage())); } }"><h3><a href="#mapper">Fehlerbehandlung – @ServerExceptionMapper → {&quot;message&quot;: &quot;...&quot;}</a></h3><div class="body">
+<p>Eine Klasse (z.B. <code>ExceptionMappers</code>) im <code>boundary</code>-Package, je Exception-Typ eine Methode. Spezifischster Typ gewinnt.</p>
+<p>Bean-Validation-Text ist <code>"must not be null"</code>, der Property-Pfad z.B. <code>loadCargo.dto.fruitId</code> → letzter Knoten = Feldname → <code>"fruitId must not be null"</code>.</p>
+</div><div class="code"><div class="code-head"><span>ExceptionMappers</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.exception.CargoRuleException;
+import at.htl.fruitshipping.entity.dto.ErrorDto;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+
+/** every error is answered as {&quot;message&quot;: &quot;...&quot;} */
+public class ExceptionMappers {
+
+    @ServerExceptionMapper
+    public RestResponse&lt;ErrorDto&gt; mapCargoRule(CargoRuleException e) {
+        return RestResponse.status(Response.Status.CONFLICT, new ErrorDto(e.getMessage()));
+    }
+
+    @ServerExceptionMapper
+    public RestResponse&lt;ErrorDto&gt; mapNotFound(NotFoundException e) {
+        return RestResponse.status(Response.Status.NOT_FOUND, new ErrorDto(e.getMessage()));
+    }
+
+    @ServerExceptionMapper
+    public RestResponse&lt;ErrorDto&gt; mapBadRequest(BadRequestException e) {
+        return RestResponse.status(Response.Status.BAD_REQUEST, new ErrorDto(e.getMessage()));
+    }
+
+    /** bean validation, e.g. &quot;fruitId must not be null&quot; */
+    @ServerExceptionMapper
+    public RestResponse&lt;ErrorDto&gt; mapValidation(ConstraintViolationException e) {
+        ConstraintViolation&lt;?&gt; violation = e.getConstraintViolations().iterator().next();
+        String field = null;
+        for (Path.Node node : violation.getPropertyPath()) {
+            field = node.getName(); // last node = field name (path is &quot;loadCargo.dto.fruitId&quot;)
+        }
+        return RestResponse.status(Response.Status.BAD_REQUEST, new ErrorDto(field + &quot; &quot; + violation.getMessage()));
+    }
+}</code></pre></div></article><article class="card" id="httpcodes" data-search="http-statuscodes &amp; response-builder http status code 200 201 204 400 404 409 response ok created nocontent status code bedeutung java 200 ok (rückgabe eines objekts) return dto; / response.ok(dto).build() 201 created + location response.created(uri).entity(dto).build() 204 no content response.nocontent().build() (oder void -methode) 400 bad request throw new badrequestexception(&quot;...&quot;) 404 not found throw new notfoundexception(&quot;...&quot;) 409 conflict eigene exception + mapper → response.status.conflict "><h3><a href="#httpcodes">HTTP-Statuscodes &amp; Response-Builder</a></h3><div class="body">
+<table class="tbl">
+<tr><th>Code</th><th>Bedeutung</th><th>Java</th></tr>
+<tr><td>200</td><td>OK (Rückgabe eines Objekts)</td><td><code>return dto;</code> / <code>Response.ok(dto).build()</code></td></tr>
+<tr><td>201</td><td>Created + Location</td><td><code>Response.created(uri).entity(dto).build()</code></td></tr>
+<tr><td>204</td><td>No Content</td><td><code>Response.noContent().build()</code> (oder <code>void</code>-Methode)</td></tr>
+<tr><td>400</td><td>Bad Request</td><td><code>throw new BadRequestException("...")</code></td></tr>
+<tr><td>404</td><td>Not Found</td><td><code>throw new NotFoundException("...")</code></td></tr>
+<tr><td>409</td><td>Conflict</td><td>eigene Exception + Mapper → <code>Response.Status.CONFLICT</code></td></tr>
+</table>
+</div></article></section>
+<section class="cat" data-cat="angular"><h2>Angular</h2><article class="card" id="ng-page" data-search="aufgabe 7 – page-komponente mit signals angular component signal computed inject subscribe httperrorresponse error message form standalone page cargo abhängigkeiten mit inject() , keine konstruktor-injection. zustand als signal() , abgeleitete werte als computed() (z.b. gesamtgewicht, button aktiv?). fehlermeldung des servers: err.error.message (body = errordto ). nach erfolg: fehler löschen, formular leeren, liste neu laden. cargo.ts import { component, computed, inject, signal } from &#x27;@angular/core&#x27;; import { httperrorresponse } from &#x27;@angular/common/http&#x27;; import { shippingservice } from &#x27;../shipping.service&#x27;; import { containerdto, errordto, fruitdto, voyagedto } from &#x27;../model/dtos&#x27;; import { containerlistcomponent } from &#x27;../container-list/container-list&#x27;; /** page: select a voyage, show its containers and load cargo */ @component({ selector: &#x27;app-cargo&#x27;, imports: [containerlistcomponent], templateurl: &#x27;./cargo.html&#x27;, styleurl: &#x27;./cargo.css&#x27; }) export class cargocomponent { private readonly service = inject(shippingservice); readonly voyages = signal&lt;voyagedto[]&gt;([]); readonly fruits = signal&lt;fruitdto[]&gt;([]); readonly containers = signal&lt;containerdto[]&gt;([]); readonly selectedvoyageid = signal&lt;number | null&gt;(null); readonly errormessage = signal&lt;string | null&gt;(null); // form state readonly containerid = signal&lt;number | null&gt;(null); readonly fruitid = signal&lt;number | null&gt;(null); readonly weightkg = signal&lt;number | null&gt;(null); readonly origincountry = signal(&#x27;&#x27;); readonly totalweight = computed(() =&gt; this.containers().reduce((sum, c) =&gt; sum + c.loadedkg, 0)); readonly formvalid = computed(() =&gt; this.containerid() !== null &amp;&amp; this.fruitid() !== null &amp;&amp; (this.weightkg() ?? 0) &gt; 0 &amp;&amp; this.origincountry().trim() !== &#x27;&#x27;); constructor() { this.service.getvoyages().subscribe(v =&gt; this.voyages.set(v)); this.service.getfruits().subscribe(f =&gt; this.fruits.set(f)); } selectvoyage(value: string): void { const id = value ? number(value) : null; this.selectedvoyageid.set(id); this.containerid.set(null); this.reload(); } reload(): void { const id = this.selectedvoyageid(); if (id === null) { this.containers.set([]); return; } this.service.getcontainers(id).subscribe(c =&gt; this.containers.set(c)); } tonumberornull(value: string): number | null { return value === &#x27;&#x27; ? null : number(value); } load(): void { if (!this.formvalid()) return; this.service.loadcargo(this.containerid()!, { fruitid: this.fruitid()!, weightkg: this.weightkg()!, origincountry: this.origincountry().trim() }).subscribe({ next: () =&gt; { this.errormessage.set(null); this.containerid.set(null); this.fruitid.set(null); this.weightkg.set(null); this.origincountry.set(&#x27;&#x27;); this.reload(); }, error: (err: httperrorresponse) =&gt; this.showerror(err) }); } removeitem(cargoitemid: number): void { this.service.deletecargoitem(cargoitemid).subscribe({ next: () =&gt; this.reload(), error: (err: httperrorresponse) =&gt; this.showerror(err) }); } private showerror(err: httperrorresponse): void { this.errormessage.set((err.error as errordto | null)?.message ?? err.message); } } cargo.html &lt;section&gt; &lt;label&gt; voyage &lt;select [value]=&quot;selectedvoyageid() ?? &#x27;&#x27;&quot; (change)=&quot;selectvoyage($any($event.target).value)&quot;&gt; &lt;option value=&quot;&quot;&gt;-- select a voyage --&lt;/option&gt; @for (v of voyages(); track v.id) { &lt;option [value]=&quot;v.id&quot;&gt;{{ v.shipname }} ({{ v.departureport }} → {{ v.destinationport }}, {{ v.departuredate }})&lt;/option&gt; } &lt;/select&gt; &lt;/label&gt; &lt;/section&gt; @if (selectedvoyageid() !== null) { &lt;section&gt; &lt;app-container-list [containers]=&quot;containers()&quot; (remove)=&quot;removeitem($event)&quot; /&gt; &lt;p&gt;&lt;strong&gt;total weight: {{ totalweight() }} kg&lt;/strong&gt;&lt;/p&gt; &lt;/section&gt; &lt;section&gt; &lt;h2&gt;load cargo&lt;/h2&gt; @if (errormessage()) { &lt;p class=&quot;error&quot;&gt;{{ errormessage() }}&lt;/p&gt; } &lt;form class=&quot;cargo-form&quot; (submit)=&quot;$event.preventdefault(); load()&quot;&gt; &lt;label&gt; container &lt;select [value]=&quot;containerid() ?? &#x27;&#x27;&quot; (change)=&quot;containerid.set(tonumberornull($any($event.target).value))&quot;&gt; &lt;option value=&quot;&quot;&gt;--&lt;/option&gt; @for (c of containers(); track c.id) { &lt;option [value]=&quot;c.id&quot;&gt;{{ c.containernumber }} (free {{ c.freekg }} kg)&lt;/option&gt; } &lt;/select&gt; &lt;/label&gt; &lt;label&gt; fruit &lt;select [value]=&quot;fruitid() ?? &#x27;&#x27;&quot; (change)=&quot;fruitid.set(tonumberornull($any($event.target).value))&quot;&gt; &lt;option value=&quot;&quot;&gt;--&lt;/option&gt; @for (f of fruits(); track f.id) { &lt;option [value]=&quot;f.id&quot;&gt;{{ f.name }} ({{ f.mintemperature }}–{{ f.maxtemperature }} °c)&lt;/option&gt; } &lt;/select&gt; &lt;/label&gt; &lt;label&gt; weight (kg) &lt;input type=&quot;number&quot; [value]=&quot;weightkg() ?? &#x27;&#x27;&quot; (input)=&quot;weightkg.set(tonumberornull($any($event.target).value))&quot; /&gt; &lt;/label&gt; &lt;label&gt; origin country &lt;input type=&quot;text&quot; [value]=&quot;origincountry()&quot; (input)=&quot;origincountry.set($any($event.target).value)&quot; /&gt; &lt;/label&gt; &lt;button type=&quot;submit&quot; [disabled]=&quot;!formvalid()&quot;&gt;load&lt;/button&gt; &lt;/form&gt; &lt;/section&gt; }"><h3><a href="#ng-page">Aufgabe 7 – Page-Komponente mit Signals</a></h3><div class="body">
+<ul>
+<li>Abhängigkeiten mit <code>inject()</code>, <b>keine</b> Konstruktor-Injection.</li>
+<li>Zustand als <code>signal()</code>, abgeleitete Werte als <code>computed()</code> (z.B. Gesamtgewicht, Button aktiv?).</li>
+<li>Fehlermeldung des Servers: <code>err.error.message</code> (Body = <code>ErrorDto</code>).</li>
+<li>Nach Erfolg: Fehler löschen, Formular leeren, Liste neu laden.</li>
+</ul>
+</div><div class="code"><div class="code-head"><span>cargo.ts</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-typescript">import { Component, computed, inject, signal } from &#x27;@angular/core&#x27;;
+import { HttpErrorResponse } from &#x27;@angular/common/http&#x27;;
+import { ShippingService } from &#x27;../shipping.service&#x27;;
+import { ContainerDto, ErrorDto, FruitDto, VoyageDto } from &#x27;../model/dtos&#x27;;
+import { ContainerListComponent } from &#x27;../container-list/container-list&#x27;;
+
+/** page: select a voyage, show its containers and load cargo */
+@Component({
+  selector: &#x27;app-cargo&#x27;,
+  imports: [ContainerListComponent],
+  templateUrl: &#x27;./cargo.html&#x27;,
+  styleUrl: &#x27;./cargo.css&#x27;
+})
+export class CargoComponent {
+  private readonly service = inject(ShippingService);
+
+  readonly voyages = signal&lt;VoyageDto[]&gt;([]);
+  readonly fruits = signal&lt;FruitDto[]&gt;([]);
+  readonly containers = signal&lt;ContainerDto[]&gt;([]);
+  readonly selectedVoyageId = signal&lt;number | null&gt;(null);
+  readonly errorMessage = signal&lt;string | null&gt;(null);
+
+  // form state
+  readonly containerId = signal&lt;number | null&gt;(null);
+  readonly fruitId = signal&lt;number | null&gt;(null);
+  readonly weightKg = signal&lt;number | null&gt;(null);
+  readonly originCountry = signal(&#x27;&#x27;);
+
+  readonly totalWeight = computed(() =&gt;
+    this.containers().reduce((sum, c) =&gt; sum + c.loadedKg, 0));
+
+  readonly formValid = computed(() =&gt;
+    this.containerId() !== null &amp;&amp;
+    this.fruitId() !== null &amp;&amp;
+    (this.weightKg() ?? 0) &gt; 0 &amp;&amp;
+    this.originCountry().trim() !== &#x27;&#x27;);
+
+  constructor() {
+    this.service.getVoyages().subscribe(v =&gt; this.voyages.set(v));
+    this.service.getFruits().subscribe(f =&gt; this.fruits.set(f));
+  }
+
+  selectVoyage(value: string): void {
+    const id = value ? Number(value) : null;
+    this.selectedVoyageId.set(id);
+    this.containerId.set(null);
+    this.reload();
+  }
+
+  reload(): void {
+    const id = this.selectedVoyageId();
+    if (id === null) {
+      this.containers.set([]);
+      return;
+    }
+    this.service.getContainers(id).subscribe(c =&gt; this.containers.set(c));
+  }
+
+  toNumberOrNull(value: string): number | null {
+    return value === &#x27;&#x27; ? null : Number(value);
+  }
+
+  load(): void {
+    if (!this.formValid()) return;
+    this.service.loadCargo(this.containerId()!, {
+      fruitId: this.fruitId()!,
+      weightKg: this.weightKg()!,
+      originCountry: this.originCountry().trim()
+    }).subscribe({
+      next: () =&gt; {
+        this.errorMessage.set(null);
+        this.containerId.set(null);
+        this.fruitId.set(null);
+        this.weightKg.set(null);
+        this.originCountry.set(&#x27;&#x27;);
+        this.reload();
+      },
+      error: (err: HttpErrorResponse) =&gt; this.showError(err)
+    });
+  }
+
+  removeItem(cargoItemId: number): void {
+    this.service.deleteCargoItem(cargoItemId).subscribe({
+      next: () =&gt; this.reload(),
+      error: (err: HttpErrorResponse) =&gt; this.showError(err)
+    });
+  }
+
+  private showError(err: HttpErrorResponse): void {
+    this.errorMessage.set((err.error as ErrorDto | null)?.message ?? err.message);
+  }
+}</code></pre></div><div class="code"><div class="code-head"><span>cargo.html</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-html">&lt;section&gt;
+  &lt;label&gt;
+    Voyage
+    &lt;select [value]=&quot;selectedVoyageId() ?? &#x27;&#x27;&quot; (change)=&quot;selectVoyage($any($event.target).value)&quot;&gt;
+      &lt;option value=&quot;&quot;&gt;-- select a voyage --&lt;/option&gt;
+      @for (v of voyages(); track v.id) {
+        &lt;option [value]=&quot;v.id&quot;&gt;{{ v.shipName }} ({{ v.departurePort }} → {{ v.destinationPort }}, {{ v.departureDate }})&lt;/option&gt;
+      }
+    &lt;/select&gt;
+  &lt;/label&gt;
+&lt;/section&gt;
+
+@if (selectedVoyageId() !== null) {
+  &lt;section&gt;
+    &lt;app-container-list [containers]=&quot;containers()&quot; (remove)=&quot;removeItem($event)&quot; /&gt;
+    &lt;p&gt;&lt;strong&gt;Total weight: {{ totalWeight() }} kg&lt;/strong&gt;&lt;/p&gt;
+  &lt;/section&gt;
+
+  &lt;section&gt;
+    &lt;h2&gt;Load cargo&lt;/h2&gt;
+    @if (errorMessage()) {
+      &lt;p class=&quot;error&quot;&gt;{{ errorMessage() }}&lt;/p&gt;
+    }
+    &lt;form class=&quot;cargo-form&quot; (submit)=&quot;$event.preventDefault(); load()&quot;&gt;
+      &lt;label&gt;
+        Container
+        &lt;select [value]=&quot;containerId() ?? &#x27;&#x27;&quot; (change)=&quot;containerId.set(toNumberOrNull($any($event.target).value))&quot;&gt;
+          &lt;option value=&quot;&quot;&gt;--&lt;/option&gt;
+          @for (c of containers(); track c.id) {
+            &lt;option [value]=&quot;c.id&quot;&gt;{{ c.containerNumber }} (free {{ c.freeKg }} kg)&lt;/option&gt;
+          }
+        &lt;/select&gt;
+      &lt;/label&gt;
+      &lt;label&gt;
+        Fruit
+        &lt;select [value]=&quot;fruitId() ?? &#x27;&#x27;&quot; (change)=&quot;fruitId.set(toNumberOrNull($any($event.target).value))&quot;&gt;
+          &lt;option value=&quot;&quot;&gt;--&lt;/option&gt;
+          @for (f of fruits(); track f.id) {
+            &lt;option [value]=&quot;f.id&quot;&gt;{{ f.name }} ({{ f.minTemperature }}–{{ f.maxTemperature }} °C)&lt;/option&gt;
+          }
+        &lt;/select&gt;
+      &lt;/label&gt;
+      &lt;label&gt;
+        Weight (kg)
+        &lt;input type=&quot;number&quot; [value]=&quot;weightKg() ?? &#x27;&#x27;&quot; (input)=&quot;weightKg.set(toNumberOrNull($any($event.target).value))&quot; /&gt;
+      &lt;/label&gt;
+      &lt;label&gt;
+        Origin country
+        &lt;input type=&quot;text&quot; [value]=&quot;originCountry()&quot; (input)=&quot;originCountry.set($any($event.target).value)&quot; /&gt;
+      &lt;/label&gt;
+      &lt;button type=&quot;submit&quot; [disabled]=&quot;!formValid()&quot;&gt;Load&lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/section&gt;
+}</code></pre></div></article><article class="card" id="ng-child" data-search="kind-komponente mit input.required() und output() angular input required output emit child component container list ng generate track switch empty npx ng generate component container-list → erzeugt container-list.ts/.html/.css . in der eltern-komponente in imports: [containerlistcomponent] eintragen. verwendung: &amp;lt;app-container-list [containers]=&quot;containers()&quot; (remove)=&quot;removeitem($event)&quot; /&amp;gt; container-list.ts import { component, input, output } from &#x27;@angular/core&#x27;; import { containerdto } from &#x27;../model/dtos&#x27;; @component({ selector: &#x27;app-container-list&#x27;, imports: [], templateurl: &#x27;./container-list.html&#x27;, styleurl: &#x27;./container-list.css&#x27; }) export class containerlistcomponent { readonly containers = input.required&lt;containerdto[]&gt;(); /** id of the cargo item to remove */ readonly remove = output&lt;number&gt;(); } container-list.html &lt;table&gt; &lt;thead&gt; &lt;tr&gt; &lt;th&gt;container&lt;/th&gt;&lt;th&gt;category&lt;/th&gt;&lt;th&gt;setpoint&lt;/th&gt;&lt;th&gt;loaded&lt;/th&gt;&lt;th&gt;free&lt;/th&gt;&lt;th&gt;cargo items&lt;/th&gt; &lt;/tr&gt; &lt;/thead&gt; &lt;tbody&gt; @for (c of containers(); track c.id) { &lt;tr&gt; &lt;td&gt;{{ c.containernumber }}&lt;/td&gt; &lt;td&gt; @switch (c.climacteric) { @case (true) { climacteric } @case (false) { non-climacteric } @default { &lt;em&gt;empty&lt;/em&gt; } } &lt;/td&gt; &lt;td&gt; @if (c.setpointtemperature !== null) { {{ c.setpointtemperature }} °c } &lt;/td&gt; &lt;td&gt;{{ c.loadedkg }} kg&lt;/td&gt; &lt;td&gt;{{ c.freekg }} kg&lt;/td&gt; &lt;td&gt; &lt;ul&gt; @for (item of c.cargoitems; track item.id) { &lt;li&gt; {{ item.fruitname }}, {{ item.weightkg }} kg ({{ item.origincountry }}) &lt;button type=&quot;button&quot; (click)=&quot;remove.emit(item.id)&quot;&gt;remove&lt;/button&gt; &lt;/li&gt; } @empty { &lt;li&gt;–&lt;/li&gt; } &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; } &lt;/tbody&gt; &lt;/table&gt;"><h3><a href="#ng-child">Kind-Komponente mit input.required() und output()</a></h3><div class="body">
+<p><code>npx ng generate component container-list</code> → erzeugt <code>container-list.ts/.html/.css</code>. In der Eltern-Komponente in <code>imports: [ContainerListComponent]</code> eintragen.</p>
+<p>Verwendung: <code>&lt;app-container-list [containers]="containers()" (remove)="removeItem($event)" /&gt;</code></p>
+</div><div class="code"><div class="code-head"><span>container-list.ts</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-typescript">import { Component, input, output } from &#x27;@angular/core&#x27;;
+import { ContainerDto } from &#x27;../model/dtos&#x27;;
+
+@Component({
+  selector: &#x27;app-container-list&#x27;,
+  imports: [],
+  templateUrl: &#x27;./container-list.html&#x27;,
+  styleUrl: &#x27;./container-list.css&#x27;
+})
+export class ContainerListComponent {
+  readonly containers = input.required&lt;ContainerDto[]&gt;();
+  /** id of the cargo item to remove */
+  readonly remove = output&lt;number&gt;();
+}</code></pre></div><div class="code"><div class="code-head"><span>container-list.html</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-html">&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Container&lt;/th&gt;&lt;th&gt;Category&lt;/th&gt;&lt;th&gt;Setpoint&lt;/th&gt;&lt;th&gt;Loaded&lt;/th&gt;&lt;th&gt;Free&lt;/th&gt;&lt;th&gt;Cargo items&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    @for (c of containers(); track c.id) {
+      &lt;tr&gt;
+        &lt;td&gt;{{ c.containerNumber }}&lt;/td&gt;
+        &lt;td&gt;
+          @switch (c.climacteric) {
+            @case (true) { climacteric }
+            @case (false) { non-climacteric }
+            @default { &lt;em&gt;empty&lt;/em&gt; }
+          }
+        &lt;/td&gt;
+        &lt;td&gt;
+          @if (c.setpointTemperature !== null) { {{ c.setpointTemperature }} °C }
+        &lt;/td&gt;
+        &lt;td&gt;{{ c.loadedKg }} kg&lt;/td&gt;
+        &lt;td&gt;{{ c.freeKg }} kg&lt;/td&gt;
+        &lt;td&gt;
+          &lt;ul&gt;
+            @for (item of c.cargoItems; track item.id) {
+              &lt;li&gt;
+                {{ item.fruitName }}, {{ item.weightKg }} kg ({{ item.originCountry }})
+                &lt;button type=&quot;button&quot; (click)=&quot;remove.emit(item.id)&quot;&gt;Remove&lt;/button&gt;
+              &lt;/li&gt;
+            } @empty {
+              &lt;li&gt;–&lt;/li&gt;
+            }
+          &lt;/ul&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    }
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre></div></article><article class="card" id="ng-syntax" data-search="angular syntax-spickzettel (control flow, bindings, signals) angular control flow if else for track empty switch case default signal set update computed effect value input change binding event property formular ohne reactive forms : [value] + (input) / (change) an signals binden. template &lt;!-- if / else --&gt; @if (errormessage()) { &lt;p class=&quot;error&quot;&gt;{{ errormessage() }}&lt;/p&gt; } @else { &lt;p&gt;alles ok&lt;/p&gt; } &lt;!-- for mit track + empty --&gt; @for (c of containers(); track c.id) { &lt;li&gt;{{ c.containernumber }}&lt;/li&gt; } @empty { &lt;li&gt;keine einträge&lt;/li&gt; } &lt;!-- switch (auch für boolean | null) --&gt; @switch (c.climacteric) { @case (true) { climacteric } @case (false) { non-climacteric } @default { &lt;em&gt;empty&lt;/em&gt; } } &lt;!-- formularfelder an signals binden --&gt; &lt;input type=&quot;text&quot; [value]=&quot;name()&quot; (input)=&quot;name.set($any($event.target).value)&quot; /&gt; &lt;input type=&quot;number&quot; [value]=&quot;weight() ?? &#x27;&#x27;&quot; (input)=&quot;weight.set(+$any($event.target).value)&quot; /&gt; &lt;select [value]=&quot;fruitid() ?? &#x27;&#x27;&quot; (change)=&quot;fruitid.set(+$any($event.target).value)&quot;&gt; &lt;option value=&quot;&quot;&gt;--&lt;/option&gt; @for (f of fruits(); track f.id) { &lt;option [value]=&quot;f.id&quot;&gt;{{ f.name }}&lt;/option&gt; } &lt;/select&gt; &lt;button [disabled]=&quot;!formvalid()&quot; (click)=&quot;save()&quot;&gt;speichern&lt;/button&gt; &lt;!-- pipes --&gt; {{ v.departuredate | date:&#x27;dd.mm.yyyy&#x27; }} {{ kg | number:&#x27;1.0-0&#x27; }} (datepipe/decimalpipe in imports!) typescript import { component, computed, effect, inject, input, output, signal } from &#x27;@angular/core&#x27;; readonly items = signal&lt;itemdto[]&gt;([]); // lesen: items() this.items.set(list); // setzen this.items.update(old =&gt; [...old, neu]); // ändern readonly total = computed(() =&gt; this.items().reduce((s, i) =&gt; s + i.weightkg, 0)); readonly valid = computed(() =&gt; this.name().trim() !== &#x27;&#x27; &amp;&amp; (this.weight() ?? 0) &gt; 0); readonly data = input.required&lt;containerdto[]&gt;(); // eltern -&gt; kind readonly remove = output&lt;number&gt;(); // kind -&gt; eltern: this.remove.emit(id) constructor() { effect(() =&gt; console.log(&#x27;voyage changed&#x27;, this.selectedvoyageid())); // reagiert auf signal-änderung } // http mit fehlerbehandlung this.service.loadcargo(id, dto).subscribe({ next: () =&gt; { this.error.set(null); this.reload(); }, error: (err: httperrorresponse) =&gt; this.error.set(err.error?.message ?? err.message) });"><h3><a href="#ng-syntax">Angular Syntax-Spickzettel (Control Flow, Bindings, Signals)</a></h3><div class="body">
+<p>Formular <b>ohne Reactive Forms</b>: <code>[value]</code> + <code>(input)</code>/<code>(change)</code> an Signals binden.</p>
+</div><div class="code"><div class="code-head"><span>Template</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-html">&lt;!-- if / else --&gt;
+@if (errorMessage()) {
+  &lt;p class=&quot;error&quot;&gt;{{ errorMessage() }}&lt;/p&gt;
+} @else {
+  &lt;p&gt;alles ok&lt;/p&gt;
+}
+
+&lt;!-- for mit track + empty --&gt;
+@for (c of containers(); track c.id) {
+  &lt;li&gt;{{ c.containerNumber }}&lt;/li&gt;
+} @empty {
+  &lt;li&gt;keine Einträge&lt;/li&gt;
+}
+
+&lt;!-- switch (auch für boolean | null) --&gt;
+@switch (c.climacteric) {
+  @case (true) { climacteric }
+  @case (false) { non-climacteric }
+  @default { &lt;em&gt;empty&lt;/em&gt; }
+}
+
+&lt;!-- Formularfelder an Signals binden --&gt;
+&lt;input type=&quot;text&quot;   [value]=&quot;name()&quot; (input)=&quot;name.set($any($event.target).value)&quot; /&gt;
+&lt;input type=&quot;number&quot; [value]=&quot;weight() ?? &#x27;&#x27;&quot; (input)=&quot;weight.set(+$any($event.target).value)&quot; /&gt;
+&lt;select [value]=&quot;fruitId() ?? &#x27;&#x27;&quot; (change)=&quot;fruitId.set(+$any($event.target).value)&quot;&gt;
+  &lt;option value=&quot;&quot;&gt;--&lt;/option&gt;
+  @for (f of fruits(); track f.id) { &lt;option [value]=&quot;f.id&quot;&gt;{{ f.name }}&lt;/option&gt; }
+&lt;/select&gt;
+&lt;button [disabled]=&quot;!formValid()&quot; (click)=&quot;save()&quot;&gt;Speichern&lt;/button&gt;
+
+&lt;!-- Pipes --&gt;
+{{ v.departureDate | date:&#x27;dd.MM.yyyy&#x27; }}  {{ kg | number:&#x27;1.0-0&#x27; }}   (DatePipe/DecimalPipe in imports!)</code></pre></div><div class="code"><div class="code-head"><span>TypeScript</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-typescript">import { Component, computed, effect, inject, input, output, signal } from &#x27;@angular/core&#x27;;
+
+readonly items = signal&lt;ItemDto[]&gt;([]);          // lesen: items()
+this.items.set(list);                              // setzen
+this.items.update(old =&gt; [...old, neu]);           // ändern
+
+readonly total = computed(() =&gt; this.items().reduce((s, i) =&gt; s + i.weightKg, 0));
+readonly valid = computed(() =&gt; this.name().trim() !== &#x27;&#x27; &amp;&amp; (this.weight() ?? 0) &gt; 0);
+
+readonly data   = input.required&lt;ContainerDto[]&gt;();   // Eltern -&gt; Kind
+readonly remove = output&lt;number&gt;();                   // Kind -&gt; Eltern: this.remove.emit(id)
+
+constructor() {
+  effect(() =&gt; console.log(&#x27;voyage changed&#x27;, this.selectedVoyageId()));  // reagiert auf Signal-Änderung
+}
+
+// HTTP mit Fehlerbehandlung
+this.service.loadCargo(id, dto).subscribe({
+  next: () =&gt; { this.error.set(null); this.reload(); },
+  error: (err: HttpErrorResponse) =&gt; this.error.set(err.error?.message ?? err.message)
+});</code></pre></div></article></section>
+<section class="cat" data-cat="graphql"><h2>GraphQL</h2><article class="card" id="gql" data-search="aufgabe 8 – graphql api (@graphqlapi, @query, @name) graphql graphqlapi query name description null optional filter boolean smallrye gql dto mutation source klasse mit @graphqlapi im boundary -package; jede methode mit @query(&quot;name&quot;) . parameter mit @name(&quot;id&quot;) . optionaler filter: wrapper-typ boolean (darf null sein). nicht gefunden → null zurückgeben (kein 404). gql-dtos verwenden ( dtomapper.togql ) – verschachtelte abfragen funktionieren automatisch. filtern im repository ( findbyclimacteric ), nicht im stream! testen: http://localhost:8080/q/graphql-ui shippinggraphqlapi package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.fruitrepository; import at.htl.fruitshipping.control.voyagerepository; import at.htl.fruitshipping.entity.fruit; import at.htl.fruitshipping.entity.dto.dtomapper; import at.htl.fruitshipping.entity.dto.fruitgql; import at.htl.fruitshipping.entity.dto.voyagegql; import jakarta.inject.inject; import jakarta.transaction.transactional; import org.eclipse.microprofile.graphql.description; import org.eclipse.microprofile.graphql.graphqlapi; import org.eclipse.microprofile.graphql.name; import org.eclipse.microprofile.graphql.query; import java.util.list; @graphqlapi public class shippinggraphqlapi { @inject voyagerepository voyagerepository; @inject fruitrepository fruitrepository; @query(&quot;voyages&quot;) @description(&quot;all voyages ordered by departure&quot;) @transactional public list&lt;voyagegql&gt; voyages() { return voyagerepository.findallorderedbydeparture().stream().map(dtomapper::togql).tolist(); } @query(&quot;voyage&quot;) @description(&quot;one voyage or null&quot;) @transactional public voyagegql voyage(@name(&quot;id&quot;) long id) { return voyagerepository.findbyidoptional(id).map(dtomapper::togql).orelse(null); } @query(&quot;fruits&quot;) @description(&quot;all fruits or only the fruits of one category&quot;) public list&lt;fruitgql&gt; fruits(@name(&quot;climacteric&quot;) boolean climacteric) { list&lt;fruit&gt; fruits = climacteric == null ? fruitrepository.findallorderedbyname() : fruitrepository.findbyclimacteric(climacteric); return fruits.stream().map(dtomapper::togql).tolist(); } } erweiterungen: mutation, @source, @defaultvalue @mutation(&quot;deletecargoitem&quot;) @transactional public boolean deletecargoitem(@name(&quot;id&quot;) long id) { return cargoitemrepository.deletebyid(id); } @query(&quot;fruitspaged&quot;) public list&lt;fruitgql&gt; fruitspaged(@name(&quot;limit&quot;) @defaultvalue(&quot;5&quot;) int limit) { ... } // zusätzliches berechnetes feld an einem typ (feld &quot;totalweight&quot; am typ voyage): public double totalweight(@source voyagegql voyage) { return cargoitemrepository.totalweightbyvoyage(voyage.id()); } beispiel-queries { voyages { id shipname } } { voyage(id: 999) { id shipname } } # -&gt; {&quot;data&quot;: {&quot;voyage&quot;: null}} { voyage(id: 1) { containers { containernumber setpointtemperature cargoitems { weightkg fruit { name climacteric } } } } } query fruits($climacteric: boolean) { fruits(climacteric: $climacteric) { name mintemperature maxtemperature } }"><h3><a href="#gql">Aufgabe 8 – GraphQL API (@GraphQLApi, @Query, @Name)</a></h3><div class="body">
+<ul>
+<li>Klasse mit <code>@GraphQLApi</code> im <code>boundary</code>-Package; jede Methode mit <code>@Query("name")</code>.</li>
+<li>Parameter mit <code>@Name("id")</code>. Optionaler Filter: Wrapper-Typ <code>Boolean</code> (darf null sein).</li>
+<li>Nicht gefunden → <code>null</code> zurückgeben (kein 404).</li>
+<li><b>GQL-DTOs</b> verwenden (<code>DtoMapper.toGql</code>) – verschachtelte Abfragen funktionieren automatisch.</li>
+<li>Filtern im Repository (<code>findByClimacteric</code>), nicht im Stream!</li>
+<li>Testen: <code>http://localhost:8080/q/graphql-ui</code></li>
+</ul>
+</div><div class="code"><div class="code-head"><span>ShippingGraphQLApi</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.FruitRepository;
+import at.htl.fruitshipping.control.VoyageRepository;
+import at.htl.fruitshipping.entity.Fruit;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import at.htl.fruitshipping.entity.dto.FruitGql;
+import at.htl.fruitshipping.entity.dto.VoyageGql;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.graphql.Description;
+import org.eclipse.microprofile.graphql.GraphQLApi;
+import org.eclipse.microprofile.graphql.Name;
+import org.eclipse.microprofile.graphql.Query;
+
+import java.util.List;
+
+@GraphQLApi
+public class ShippingGraphQLApi {
+
+    @Inject
+    VoyageRepository voyageRepository;
+    @Inject
+    FruitRepository fruitRepository;
+
+    @Query(&quot;voyages&quot;)
+    @Description(&quot;all voyages ordered by departure&quot;)
+    @Transactional
+    public List&lt;VoyageGql&gt; voyages() {
+        return voyageRepository.findAllOrderedByDeparture().stream().map(DtoMapper::toGql).toList();
+    }
+
+    @Query(&quot;voyage&quot;)
+    @Description(&quot;one voyage or null&quot;)
+    @Transactional
+    public VoyageGql voyage(@Name(&quot;id&quot;) long id) {
+        return voyageRepository.findByIdOptional(id).map(DtoMapper::toGql).orElse(null);
+    }
+
+    @Query(&quot;fruits&quot;)
+    @Description(&quot;all fruits or only the fruits of one category&quot;)
+    public List&lt;FruitGql&gt; fruits(@Name(&quot;climacteric&quot;) Boolean climacteric) {
+        List&lt;Fruit&gt; fruits = climacteric == null
+                ? fruitRepository.findAllOrderedByName()
+                : fruitRepository.findByClimacteric(climacteric);
+        return fruits.stream().map(DtoMapper::toGql).toList();
+    }
+}</code></pre></div><div class="code"><div class="code-head"><span>Erweiterungen: Mutation, @Source, @DefaultValue</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">@Mutation(&quot;deleteCargoItem&quot;)
+@Transactional
+public boolean deleteCargoItem(@Name(&quot;id&quot;) long id) {
+    return cargoItemRepository.deleteById(id);
+}
+
+@Query(&quot;fruitsPaged&quot;)
+public List&lt;FruitGql&gt; fruitsPaged(@Name(&quot;limit&quot;) @DefaultValue(&quot;5&quot;) int limit) { ... }
+
+// zusätzliches berechnetes Feld an einem Typ (Feld &quot;totalWeight&quot; am Typ Voyage):
+public double totalWeight(@Source VoyageGql voyage) {
+    return cargoItemRepository.totalWeightByVoyage(voyage.id());
+}</code></pre></div><div class="code"><div class="code-head"><span>Beispiel-Queries</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-graphql">{ voyages { id shipName } }
+
+{ voyage(id: 999) { id shipName } }          # -&gt; {&quot;data&quot;: {&quot;voyage&quot;: null}}
+
+{ voyage(id: 1) {
+    containers { containerNumber setpointTemperature
+                 cargoItems { weightKg fruit { name climacteric } } } } }
+
+query Fruits($climacteric: Boolean) {
+  fruits(climacteric: $climacteric) { name minTemperature maxTemperature }
+}</code></pre></div></article></section>
+<section class="cat" data-cat="ref"><h2>Nachschlagen</h2><article class="card" id="pitfalls" data-search="typische fehler &amp; lösungen fehler fallen pitfalls lazy initialization noresultexception nonunique group by null locale komma transactional loadedentities statistik symptom lösung test: „entities loaded: use sum(...) in the query…“ kein listall() / stream().filter . aggregat in jpql/sql. für reise-existenz voyagerepository.findbyidoptional ok. sum liefert null → npe coalesce(sum(x), 0.0) noresultexception getresultstream().findfirst() statt getsingleresult() classcastexception long → integer/double native: ((number) x).longvalue() ; jpql: count ist long , sum(int) ist long konstruktor-ausdruck: „could not resolve class“ / „no matching constructor“ voll qualifizierter name; typen exakt (long statt int bei count) lazyinitializationexception methode mit @transactional oder join fetch transactionrequiredexception bei persist/delete @transactional auf service-/resource-methode fehlertext „-1,0“ statt „-1.0“ kein %.1f – double mit %s bzw. string.format(locale.root, ...) getloadedkg() nach persist falsch beziehung pflegen: container.getcargoitems().add(item) fehler-json kommt als html/text @serverexceptionmapper fehlt für diese exception angular: „is not a known element“ komponente in imports: [...] der eltern-komponente angular: select liefert string number(value) bzw. +value cors-fehler npm start nutzen (proxy /api → 8080), nicht direkt localhost:8080 "><h3><a href="#pitfalls">Typische Fehler &amp; Lösungen</a></h3><div class="body">
+<table class="tbl">
+<tr><th>Symptom</th><th>Lösung</th></tr>
+<tr><td>Test: „entities loaded: use sum(...) in the query…“</td><td>Kein <code>listAll()</code>/<code>stream().filter</code>. Aggregat in JPQL/SQL. Für Reise-Existenz <code>voyageRepository.findByIdOptional</code> ok.</td></tr>
+<tr><td><code>sum</code> liefert <code>null</code> → NPE</td><td><code>coalesce(sum(x), 0.0)</code></td></tr>
+<tr><td><code>NoResultException</code></td><td><code>getResultStream().findFirst()</code> statt <code>getSingleResult()</code></td></tr>
+<tr><td><code>ClassCastException Long → Integer/Double</code></td><td>Native: <code>((Number) x).longValue()</code>; JPQL: <code>count</code> ist <code>Long</code>, <code>sum(int)</code> ist <code>Long</code></td></tr>
+<tr><td>Konstruktor-Ausdruck: „Could not resolve class“ / „no matching constructor“</td><td>Voll qualifizierter Name; Typen exakt (long statt int bei count)</td></tr>
+<tr><td><code>LazyInitializationException</code></td><td>Methode mit <code>@Transactional</code> oder <code>join fetch</code></td></tr>
+<tr><td><code>TransactionRequiredException</code> bei persist/delete</td><td><code>@Transactional</code> auf Service-/Resource-Methode</td></tr>
+<tr><td>Fehlertext „-1,0“ statt „-1.0“</td><td>Kein <code>%.1f</code> – Double mit <code>%s</code> bzw. <code>String.format(Locale.ROOT, ...)</code></td></tr>
+<tr><td><code>getLoadedKg()</code> nach persist falsch</td><td>Beziehung pflegen: <code>container.getCargoItems().add(item)</code></td></tr>
+<tr><td>Fehler-JSON kommt als HTML/Text</td><td><code>@ServerExceptionMapper</code> fehlt für diese Exception</td></tr>
+<tr><td>Angular: „is not a known element“</td><td>Komponente in <code>imports: [...]</code> der Eltern-Komponente</td></tr>
+<tr><td>Angular: Select liefert String</td><td><code>Number(value)</code> bzw. <code>+value</code></td></tr>
+<tr><td>CORS-Fehler</td><td><code>npm start</code> nutzen (Proxy <code>/api</code> → 8080), nicht direkt <code>localhost:8080</code></td></tr>
+</table>
+</div></article><article class="card" id="entities" data-search="entity-mapping spickzettel (jpa) entity jpa onetomany manytoone mappedby joincolumn id generatedvalue column table orderby bidirektional falls entities selbst geschrieben werden müssen: bidirektionale 1:n beziehung @entity @table(name = &quot;containers&quot;) public class container { @id @generatedvalue(strategy = generationtype.identity) private long id; @column(name = &quot;container_number&quot;, nullable = false, unique = true) private string containernumber; @manytoone(optional = false) // besitzerseite: hat die fk-spalte @joincolumn(name = &quot;voyage_id&quot;) private voyage voyage; @onetomany(mappedby = &quot;container&quot;) // inverse seite: mappedby = feldname auf der anderen seite @orderby(&quot;id&quot;) private list&lt;cargoitem&gt; cargoitems = new arraylist&lt;&gt;(); public container() {} // jpa braucht no-arg konstruktor }"><h3><a href="#entities">Entity-Mapping Spickzettel (JPA)</a></h3><div class="body"><p>Falls Entities selbst geschrieben werden müssen:</p></div><div class="code"><div class="code-head"><span>Bidirektionale 1:n Beziehung</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">@Entity
+@Table(name = &quot;CONTAINERS&quot;)
+public class Container {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = &quot;container_number&quot;, nullable = false, unique = true)
+    private String containerNumber;
+
+    @ManyToOne(optional = false)           // Besitzerseite: hat die FK-Spalte
+    @JoinColumn(name = &quot;voyage_id&quot;)
+    private Voyage voyage;
+
+    @OneToMany(mappedBy = &quot;container&quot;)     // inverse Seite: mappedBy = Feldname auf der anderen Seite
+    @OrderBy(&quot;id&quot;)
+    private List&lt;CargoItem&gt; cargoItems = new ArrayList&lt;&gt;();
+
+    public Container() {}                  // JPA braucht no-arg Konstruktor
+}</code></pre></div></article><article class="card" id="quarkus-config" data-search="application.properties &amp; http-dateien application properties quarkus konfiguration rest path cors h2 log sql requests http graphql ui swagger dev ui wichtige properties quarkus.rest.path=/api # alle rest-pfade unter /api quarkus.hibernate-orm.log.sql=true # sql im log anzeigen (debug!) quarkus.hibernate-orm.schema-management.strategy=drop-and-create quarkus.hibernate-orm.sql-load-script=import.sql quarkus.http.cors.enabled=true quarkus.http.cors.origins=http://localhost:4200 quarkus.smallrye-graphql.ui.always-include=true # /q/graphql-ui quarkus.swagger-ui.always-include=true # /q/swagger-ui requests.http (intellij http client) ### neuer ladungsposten post {{host}}/api/containers/4/cargo-items content-type: application/json {&quot;fruitid&quot;: 1, &quot;weightkg&quot;: 2000, &quot;origincountry&quot;: &quot;ecuador&quot;} &gt; {% client.global.set(&quot;cargoitemid&quot;, response.body.id); %} ### lesen get {{host}}/api/cargo-items/{{cargoitemid}}"><h3><a href="#quarkus-config">application.properties &amp; HTTP-Dateien</a></h3><div class="body"></div><div class="code"><div class="code-head"><span>Wichtige Properties</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-properties">quarkus.rest.path=/api                         # alle REST-Pfade unter /api
+quarkus.hibernate-orm.log.sql=true             # SQL im Log anzeigen (Debug!)
+quarkus.hibernate-orm.schema-management.strategy=drop-and-create
+quarkus.hibernate-orm.sql-load-script=import.sql
+quarkus.http.cors.enabled=true
+quarkus.http.cors.origins=http://localhost:4200
+quarkus.smallrye-graphql.ui.always-include=true   # /q/graphql-ui
+quarkus.swagger-ui.always-include=true            # /q/swagger-ui</code></pre></div><div class="code"><div class="code-head"><span>requests.http (IntelliJ HTTP Client)</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-http">### neuer Ladungsposten
+POST {{host}}/api/containers/4/cargo-items
+Content-Type: application/json
+
+{&quot;fruitId&quot;: 1, &quot;weightKg&quot;: 2000, &quot;originCountry&quot;: &quot;Ecuador&quot;}
+
+&gt; {% client.global.set(&quot;cargoItemId&quot;, response.body.id); %}
+
+### lesen
+GET {{host}}/api/cargo-items/{{cargoItemId}}</code></pre></div></article></section>
+<section class="cat" data-cat="solution"><h2>Komplettlösung Fruit Shipping</h2><article class="card" id="file-cargoitemrepository-java" data-search="cargoitemrepository.java komplettloesung datei file cargoitemrepository.java backend/src/main/java/at/htl/fruitshipping/control/cargoitemrepository.java cargoitemrepository.java package at.htl.fruitshipping.control; import at.htl.fruitshipping.entity.cargoitem; import at.htl.fruitshipping.entity.dto.fruitweightdto; import io.quarkus.hibernate.orm.panache.panacherepository; import jakarta.enterprise.context.applicationscoped; import jakarta.persistence.typedquery; import java.util.list; @applicationscoped public class cargoitemrepository implements panacherepository&lt;cargoitem&gt; { /** sum of all cargo item weights of the voyage, 0 if nothing is loaded */ public double totalweightbyvoyage(long voyageid) { typedquery&lt;double&gt; query = getentitymanager().createquery(&quot;&quot;&quot; select coalesce(sum(ci.weightkg), 0.0) from cargoitem ci where ci.container.voyage.id = :voyageid &quot;&quot;&quot;, double.class); query.setparameter(&quot;voyageid&quot;, voyageid); return query.getsingleresult(); } /** one entry per fruit of the voyage, heaviest first (named query with constructor expression) */ public list&lt;fruitweightdto&gt; weightperfruit(long voyageid) { return getentitymanager() .createnamedquery(cargoitem.weight_per_fruit, fruitweightdto.class) .setparameter(&quot;voyageid&quot;, voyageid) .getresultlist(); } }"><h3><a href="#file-cargoitemrepository-java">CargoItemRepository.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/control/CargoItemRepository.java</p></div><div class="code"><div class="code-head"><span>CargoItemRepository.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.control;
+
+import at.htl.fruitshipping.entity.CargoItem;
+import at.htl.fruitshipping.entity.dto.FruitWeightDto;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.TypedQuery;
+
+import java.util.List;
+
+@ApplicationScoped
+public class CargoItemRepository implements PanacheRepository&lt;CargoItem&gt; {
+
+    /** sum of all cargo item weights of the voyage, 0 if nothing is loaded */
+    public double totalWeightByVoyage(long voyageId) {
+        TypedQuery&lt;Double&gt; query = getEntityManager().createQuery(&quot;&quot;&quot;
+                select coalesce(sum(ci.weightKg), 0.0)
+                from CargoItem ci
+                where ci.container.voyage.id = :voyageId
+                &quot;&quot;&quot;, Double.class);
+        query.setParameter(&quot;voyageId&quot;, voyageId);
+        return query.getSingleResult();
+    }
+
+    /** one entry per fruit of the voyage, heaviest first (named query with constructor expression) */
+    public List&lt;FruitWeightDto&gt; weightPerFruit(long voyageId) {
+        return getEntityManager()
+                .createNamedQuery(CargoItem.WEIGHT_PER_FRUIT, FruitWeightDto.class)
+                .setParameter(&quot;voyageId&quot;, voyageId)
+                .getResultList();
+    }
+}</code></pre></div></article><article class="card" id="file-containerrepository-java" data-search="containerrepository.java komplettloesung datei file containerrepository.java backend/src/main/java/at/htl/fruitshipping/control/containerrepository.java containerrepository.java package at.htl.fruitshipping.control; import at.htl.fruitshipping.entity.container; import at.htl.fruitshipping.entity.dto.categorycountdto; import io.quarkus.hibernate.orm.panache.panacherepository; import io.quarkus.panache.common.sort; import jakarta.enterprise.context.applicationscoped; import java.util.list; @applicationscoped public class containerrepository implements panacherepository&lt;container&gt; { public list&lt;container&gt; findbyvoyage(long voyageid) { return list(&quot;voyage.id&quot;, sort.by(&quot;containernumber&quot;), voyageid); } /** containers of the voyage with at least minfreekg free capacity, empty containers included */ public list&lt;container&gt; findwithfreecapacity(long voyageid, double minfreekg) { return getentitymanager().createquery(&quot;&quot;&quot; select c from container c left join c.cargoitems ci where c.voyage.id = :voyageid group by c having c.capacitykg - coalesce(sum(ci.weightkg), 0) &gt;= :minfreekg order by c.containernumber &quot;&quot;&quot;, container.class) .setparameter(&quot;voyageid&quot;, voyageid) .setparameter(&quot;minfreekg&quot;, minfreekg) .getresultlist(); } /** number of climacteric / non-climacteric containers of the voyage (native sql), empty containers are not counted */ public categorycountdto countbycategory(long voyageid) { object[] row = (object[]) getentitymanager().createnativequery(&quot;&quot;&quot; select count(distinct case when f.climacteric then c.id end), count(distinct case when not f.climacteric then c.id end) from containers c join cargo_items ci on ci.container_id = c.id join fruits f on f.id = ci.fruit_id where c.voyage_id = :voyageid &quot;&quot;&quot;) .setparameter(&quot;voyageid&quot;, voyageid) .getsingleresult(); return new categorycountdto(((number) row[0]).longvalue(), ((number) row[1]).longvalue()); } }"><h3><a href="#file-containerrepository-java">ContainerRepository.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/control/ContainerRepository.java</p></div><div class="code"><div class="code-head"><span>ContainerRepository.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.control;
+
+import at.htl.fruitshipping.entity.Container;
+import at.htl.fruitshipping.entity.dto.CategoryCountDto;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Sort;
+import jakarta.enterprise.context.ApplicationScoped;
+
+import java.util.List;
+
+@ApplicationScoped
+public class ContainerRepository implements PanacheRepository&lt;Container&gt; {
+
+    public List&lt;Container&gt; findByVoyage(long voyageId) {
+        return list(&quot;voyage.id&quot;, Sort.by(&quot;containerNumber&quot;), voyageId);
+    }
+
+    /** containers of the voyage with at least minFreeKg free capacity, empty containers included */
+    public List&lt;Container&gt; findWithFreeCapacity(long voyageId, double minFreeKg) {
+        return getEntityManager().createQuery(&quot;&quot;&quot;
+                        select c from Container c
+                        left join c.cargoItems ci
+                        where c.voyage.id = :voyageId
+                        group by c
+                        having c.capacityKg - coalesce(sum(ci.weightKg), 0) &gt;= :minFreeKg
+                        order by c.containerNumber
+                        &quot;&quot;&quot;, Container.class)
+                .setParameter(&quot;voyageId&quot;, voyageId)
+                .setParameter(&quot;minFreeKg&quot;, minFreeKg)
+                .getResultList();
+    }
+
+    /** number of climacteric / non-climacteric containers of the voyage (native SQL), empty containers are not counted */
+    public CategoryCountDto countByCategory(long voyageId) {
+        Object[] row = (Object[]) getEntityManager().createNativeQuery(&quot;&quot;&quot;
+                        select count(distinct case when f.climacteric then c.id end),
+                               count(distinct case when not f.climacteric then c.id end)
+                        from CONTAINERS c
+                        join CARGO_ITEMS ci on ci.container_id = c.id
+                        join FRUITS f on f.id = ci.fruit_id
+                        where c.voyage_id = :voyageId
+                        &quot;&quot;&quot;)
+                .setParameter(&quot;voyageId&quot;, voyageId)
+                .getSingleResult();
+        return new CategoryCountDto(((Number) row[0]).longValue(), ((Number) row[1]).longValue());
+    }
+}</code></pre></div></article><article class="card" id="file-cargoservice-java" data-search="cargoservice.java komplettloesung datei file cargoservice.java backend/src/main/java/at/htl/fruitshipping/control/cargoservice.java cargoservice.java package at.htl.fruitshipping.control; import at.htl.fruitshipping.control.exception.capacityexceededexception; import at.htl.fruitshipping.control.exception.incompatiblecargoexception; import at.htl.fruitshipping.control.exception.temperatureconflictexception; import at.htl.fruitshipping.entity.cargoitem; import at.htl.fruitshipping.entity.container; import at.htl.fruitshipping.entity.fruit; import at.htl.fruitshipping.entity.dto.cargoitemcreatedto; import jakarta.enterprise.context.applicationscoped; import jakarta.inject.inject; import jakarta.transaction.transactional; import jakarta.ws.rs.badrequestexception; import jakarta.ws.rs.notfoundexception; @applicationscoped public class cargoservice { @inject containerrepository containerrepository; @inject fruitrepository fruitrepository; @inject cargoitemrepository cargoitemrepository; /** * loads a cargo item into a container. rules are checked in this order: * container and fruit exist, weight &gt; 0, climacteric separation, temperature overlap, capacity. */ @transactional public cargoitem loadcargo(long containerid, cargoitemcreatedto dto) { // 1. existence -&gt; 404 container container = containerrepository.findbyidoptional(containerid) .orelsethrow(() -&gt; new notfoundexception(&quot;container &quot; + containerid + &quot; not found&quot;)); fruit fruit = fruitrepository.findbyidoptional(dto.fruitid()) .orelsethrow(() -&gt; new notfoundexception(&quot;fruit &quot; + dto.fruitid() + &quot; not found&quot;)); // 2. weight &gt; 0 -&gt; 400 if (dto.weightkg() == null || dto.weightkg() &lt;= 0) { throw new badrequestexception(&quot;weight must be greater than 0 kg&quot;); } // 3. climacteric separation -&gt; 409 (empty container: getclimacteric() == null) boolean containerclimacteric = container.getclimacteric(); if (containerclimacteric != null &amp;&amp; containerclimacteric != fruit.isclimacteric()) { throw new incompatiblecargoexception(&quot;%s is %s, but container %s holds %s fruits&quot;.formatted( fruit.getname(), category(fruit.isclimacteric()), container.getcontainernumber(), category(containerclimacteric))); } // 4. temperature ranges must overlap: highest minimum &lt;= lowest maximum double highestmin = fruit.getmintemperature(); double lowestmax = fruit.getmaxtemperature(); for (cargoitem item : container.getcargoitems()) { highestmin = math.max(highestmin, item.getfruit().getmintemperature()); lowestmax = math.min(lowestmax, item.getfruit().getmaxtemperature()); } if (highestmin &gt; lowestmax) { throw new temperatureconflictexception(&quot;%s (%s to %s °c) does not fit the temperature range of container %s&quot; .formatted(fruit.getname(), fruit.getmintemperature(), fruit.getmaxtemperature(), container.getcontainernumber())); } // 5. capacity (exactly full is allowed) -&gt; 409 if (dto.weightkg() &gt; container.getfreekg()) { throw new capacityexceededexception(&quot;%.0f kg do not fit into container %s (free: %.0f kg)&quot; .formatted(dto.weightkg(), container.getcontainernumber(), container.getfreekg())); } cargoitem cargoitem = new cargoitem(dto.weightkg(), dto.origincountry(), container, fruit); cargoitemrepository.persist(cargoitem); container.getcargoitems().add(cargoitem); // keep the bidirectional relation in sync return cargoitem; } private static string category(boolean climacteric) { return climacteric ? &quot;climacteric&quot; : &quot;non-climacteric&quot;; } }"><h3><a href="#file-cargoservice-java">CargoService.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/control/CargoService.java</p></div><div class="code"><div class="code-head"><span>CargoService.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.control;
+
+import at.htl.fruitshipping.control.exception.CapacityExceededException;
+import at.htl.fruitshipping.control.exception.IncompatibleCargoException;
+import at.htl.fruitshipping.control.exception.TemperatureConflictException;
+import at.htl.fruitshipping.entity.CargoItem;
+import at.htl.fruitshipping.entity.Container;
+import at.htl.fruitshipping.entity.Fruit;
+import at.htl.fruitshipping.entity.dto.CargoItemCreateDto;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
+
+@ApplicationScoped
+public class CargoService {
+
+    @Inject
+    ContainerRepository containerRepository;
+    @Inject
+    FruitRepository fruitRepository;
+    @Inject
+    CargoItemRepository cargoItemRepository;
+
+    /**
+     * Loads a cargo item into a container. Rules are checked in this order:
+     * container and fruit exist, weight &gt; 0, climacteric separation, temperature overlap, capacity.
+     */
+    @Transactional
+    public CargoItem loadCargo(long containerId, CargoItemCreateDto dto) {
+        // 1. existence -&gt; 404
+        Container container = containerRepository.findByIdOptional(containerId)
+                .orElseThrow(() -&gt; new NotFoundException(&quot;Container &quot; + containerId + &quot; not found&quot;));
+        Fruit fruit = fruitRepository.findByIdOptional(dto.fruitId())
+                .orElseThrow(() -&gt; new NotFoundException(&quot;Fruit &quot; + dto.fruitId() + &quot; not found&quot;));
+
+        // 2. weight &gt; 0 -&gt; 400
+        if (dto.weightKg() == null || dto.weightKg() &lt;= 0) {
+            throw new BadRequestException(&quot;Weight must be greater than 0 kg&quot;);
+        }
+
+        // 3. climacteric separation -&gt; 409 (empty container: getClimacteric() == null)
+        Boolean containerClimacteric = container.getClimacteric();
+        if (containerClimacteric != null &amp;&amp; containerClimacteric != fruit.isClimacteric()) {
+            throw new IncompatibleCargoException(&quot;%s is %s, but container %s holds %s fruits&quot;.formatted(
+                    fruit.getName(), category(fruit.isClimacteric()),
+                    container.getContainerNumber(), category(containerClimacteric)));
+        }
+
+        // 4. temperature ranges must overlap: highest minimum &lt;= lowest maximum
+        double highestMin = fruit.getMinTemperature();
+        double lowestMax = fruit.getMaxTemperature();
+        for (CargoItem item : container.getCargoItems()) {
+            highestMin = Math.max(highestMin, item.getFruit().getMinTemperature());
+            lowestMax = Math.min(lowestMax, item.getFruit().getMaxTemperature());
+        }
+        if (highestMin &gt; lowestMax) {
+            throw new TemperatureConflictException(&quot;%s (%s to %s °C) does not fit the temperature range of container %s&quot;
+                    .formatted(fruit.getName(), fruit.getMinTemperature(), fruit.getMaxTemperature(),
+                            container.getContainerNumber()));
+        }
+
+        // 5. capacity (exactly full is allowed) -&gt; 409
+        if (dto.weightKg() &gt; container.getFreeKg()) {
+            throw new CapacityExceededException(&quot;%.0f kg do not fit into container %s (free: %.0f kg)&quot;
+                    .formatted(dto.weightKg(), container.getContainerNumber(), container.getFreeKg()));
+        }
+
+        CargoItem cargoItem = new CargoItem(dto.weightKg(), dto.originCountry(), container, fruit);
+        cargoItemRepository.persist(cargoItem);
+        container.getCargoItems().add(cargoItem); // keep the bidirectional relation in sync
+        return cargoItem;
+    }
+
+    private static String category(boolean climacteric) {
+        return climacteric ? &quot;climacteric&quot; : &quot;non-climacteric&quot;;
+    }
+}</code></pre></div></article><article class="card" id="file-fruitresource-java" data-search="fruitresource.java komplettloesung datei file fruitresource.java backend/src/main/java/at/htl/fruitshipping/boundary/fruitresource.java fruitresource.java package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.fruitrepository; import at.htl.fruitshipping.entity.dto.dtomapper; import at.htl.fruitshipping.entity.dto.fruitdto; import jakarta.inject.inject; import jakarta.ws.rs.get; import jakarta.ws.rs.path; import jakarta.ws.rs.produces; import jakarta.ws.rs.core.mediatype; import java.util.list; @path(&quot;fruits&quot;) @produces(mediatype.application_json) public class fruitresource { @inject fruitrepository fruitrepository; @get public list&lt;fruitdto&gt; getall() { return fruitrepository.findallorderedbyname().stream().map(dtomapper::todto).tolist(); } }"><h3><a href="#file-fruitresource-java">FruitResource.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/boundary/FruitResource.java</p></div><div class="code"><div class="code-head"><span>FruitResource.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.FruitRepository;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import at.htl.fruitshipping.entity.dto.FruitDto;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+
+import java.util.List;
+
+@Path(&quot;fruits&quot;)
+@Produces(MediaType.APPLICATION_JSON)
+public class FruitResource {
+
+    @Inject
+    FruitRepository fruitRepository;
+
+    @GET
+    public List&lt;FruitDto&gt; getAll() {
+        return fruitRepository.findAllOrderedByName().stream().map(DtoMapper::toDto).toList();
+    }
+}</code></pre></div></article><article class="card" id="file-voyageresource-java" data-search="voyageresource.java komplettloesung datei file voyageresource.java backend/src/main/java/at/htl/fruitshipping/boundary/voyageresource.java voyageresource.java package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.cargoitemrepository; import at.htl.fruitshipping.control.containerrepository; import at.htl.fruitshipping.control.voyagerepository; import at.htl.fruitshipping.entity.dto.containerdto; import at.htl.fruitshipping.entity.dto.dtomapper; import at.htl.fruitshipping.entity.dto.voyagedto; import at.htl.fruitshipping.entity.dto.voyagestatisticsdto; import jakarta.inject.inject; import jakarta.ws.rs.get; import jakarta.ws.rs.notfoundexception; import jakarta.ws.rs.path; import jakarta.ws.rs.pathparam; import jakarta.ws.rs.produces; import jakarta.ws.rs.core.mediatype; import java.util.list; @path(&quot;voyages&quot;) @produces(mediatype.application_json) public class voyageresource { @inject voyagerepository voyagerepository; @inject containerrepository containerrepository; @inject cargoitemrepository cargoitemrepository; @get public list&lt;voyagedto&gt; getall() { return voyagerepository.findallorderedbydeparture().stream().map(dtomapper::todto).tolist(); } @get @path(&quot;{id}/containers&quot;) public list&lt;containerdto&gt; getcontainers(@pathparam(&quot;id&quot;) long id) { requirevoyage(id); return containerrepository.findbyvoyage(id).stream().map(dtomapper::todto).tolist(); } @get @path(&quot;{id}/statistics&quot;) public voyagestatisticsdto getstatistics(@pathparam(&quot;id&quot;) long id) { requirevoyage(id); return new voyagestatisticsdto(id, cargoitemrepository.totalweightbyvoyage(id), cargoitemrepository.weightperfruit(id), containerrepository.countbycategory(id)); } private void requirevoyage(long id) { if (voyagerepository.findbyidoptional(id).isempty()) { throw new notfoundexception(&quot;voyage &quot; + id + &quot; not found&quot;); } } }"><h3><a href="#file-voyageresource-java">VoyageResource.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/boundary/VoyageResource.java</p></div><div class="code"><div class="code-head"><span>VoyageResource.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.CargoItemRepository;
+import at.htl.fruitshipping.control.ContainerRepository;
+import at.htl.fruitshipping.control.VoyageRepository;
+import at.htl.fruitshipping.entity.dto.ContainerDto;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import at.htl.fruitshipping.entity.dto.VoyageDto;
+import at.htl.fruitshipping.entity.dto.VoyageStatisticsDto;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+
+import java.util.List;
+
+@Path(&quot;voyages&quot;)
+@Produces(MediaType.APPLICATION_JSON)
+public class VoyageResource {
+
+    @Inject
+    VoyageRepository voyageRepository;
+    @Inject
+    ContainerRepository containerRepository;
+    @Inject
+    CargoItemRepository cargoItemRepository;
+
+    @GET
+    public List&lt;VoyageDto&gt; getAll() {
+        return voyageRepository.findAllOrderedByDeparture().stream().map(DtoMapper::toDto).toList();
+    }
+
+    @GET
+    @Path(&quot;{id}/containers&quot;)
+    public List&lt;ContainerDto&gt; getContainers(@PathParam(&quot;id&quot;) long id) {
+        requireVoyage(id);
+        return containerRepository.findByVoyage(id).stream().map(DtoMapper::toDto).toList();
+    }
+
+    @GET
+    @Path(&quot;{id}/statistics&quot;)
+    public VoyageStatisticsDto getStatistics(@PathParam(&quot;id&quot;) long id) {
+        requireVoyage(id);
+        return new VoyageStatisticsDto(id,
+                cargoItemRepository.totalWeightByVoyage(id),
+                cargoItemRepository.weightPerFruit(id),
+                containerRepository.countByCategory(id));
+    }
+
+    private void requireVoyage(long id) {
+        if (voyageRepository.findByIdOptional(id).isEmpty()) {
+            throw new NotFoundException(&quot;Voyage &quot; + id + &quot; not found&quot;);
+        }
+    }
+}</code></pre></div></article><article class="card" id="file-containerresource-java" data-search="containerresource.java komplettloesung datei file containerresource.java backend/src/main/java/at/htl/fruitshipping/boundary/containerresource.java containerresource.java package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.cargoservice; import at.htl.fruitshipping.entity.cargoitem; import at.htl.fruitshipping.entity.dto.cargoitemcreatedto; import at.htl.fruitshipping.entity.dto.dtomapper; import jakarta.inject.inject; import jakarta.validation.valid; import jakarta.validation.constraints.notnull; import jakarta.ws.rs.consumes; import jakarta.ws.rs.post; import jakarta.ws.rs.path; import jakarta.ws.rs.pathparam; import jakarta.ws.rs.produces; import jakarta.ws.rs.core.context; import jakarta.ws.rs.core.mediatype; import jakarta.ws.rs.core.response; import jakarta.ws.rs.core.uriinfo; import java.net.uri; @path(&quot;containers&quot;) @produces(mediatype.application_json) @consumes(mediatype.application_json) public class containerresource { @inject cargoservice cargoservice; @post @path(&quot;{id}/cargo-items&quot;) public response loadcargo(@pathparam(&quot;id&quot;) long id, @valid @notnull cargoitemcreatedto dto, @context uriinfo uriinfo) { cargoitem item = cargoservice.loadcargo(id, dto); uri location = uriinfo.getbaseuribuilder() .path(cargoitemresource.class) .path(string.valueof(item.getid())) .build(); return response.created(location).entity(dtomapper.todto(item)).build(); } }"><h3><a href="#file-containerresource-java">ContainerResource.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/boundary/ContainerResource.java</p></div><div class="code"><div class="code-head"><span>ContainerResource.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.CargoService;
+import at.htl.fruitshipping.entity.CargoItem;
+import at.htl.fruitshipping.entity.dto.CargoItemCreateDto;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
+import java.net.URI;
+
+@Path(&quot;containers&quot;)
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class ContainerResource {
+
+    @Inject
+    CargoService cargoService;
+
+    @POST
+    @Path(&quot;{id}/cargo-items&quot;)
+    public Response loadCargo(@PathParam(&quot;id&quot;) long id, @Valid @NotNull CargoItemCreateDto dto, @Context UriInfo uriInfo) {
+        CargoItem item = cargoService.loadCargo(id, dto);
+        URI location = uriInfo.getBaseUriBuilder()
+                .path(CargoItemResource.class)
+                .path(String.valueOf(item.getId()))
+                .build();
+        return Response.created(location).entity(DtoMapper.toDto(item)).build();
+    }
+}</code></pre></div></article><article class="card" id="file-cargoitemresource-java" data-search="cargoitemresource.java komplettloesung datei file cargoitemresource.java backend/src/main/java/at/htl/fruitshipping/boundary/cargoitemresource.java cargoitemresource.java package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.cargoitemrepository; import at.htl.fruitshipping.entity.dto.cargoitemdto; import at.htl.fruitshipping.entity.dto.dtomapper; import jakarta.inject.inject; import jakarta.transaction.transactional; import jakarta.ws.rs.delete; import jakarta.ws.rs.get; import jakarta.ws.rs.notfoundexception; import jakarta.ws.rs.path; import jakarta.ws.rs.pathparam; import jakarta.ws.rs.produces; import jakarta.ws.rs.core.mediatype; import jakarta.ws.rs.core.response; @path(&quot;cargo-items&quot;) @produces(mediatype.application_json) public class cargoitemresource { @inject cargoitemrepository cargoitemrepository; @get @path(&quot;{id}&quot;) public cargoitemdto getbyid(@pathparam(&quot;id&quot;) long id) { return cargoitemrepository.findbyidoptional(id) .map(dtomapper::todto) .orelsethrow(() -&gt; notfound(id)); } @delete @path(&quot;{id}&quot;) @transactional public response delete(@pathparam(&quot;id&quot;) long id) { if (!cargoitemrepository.deletebyid(id)) { throw notfound(id); } return response.nocontent().build(); } private static notfoundexception notfound(long id) { return new notfoundexception(&quot;cargo item &quot; + id + &quot; not found&quot;); } }"><h3><a href="#file-cargoitemresource-java">CargoItemResource.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/boundary/CargoItemResource.java</p></div><div class="code"><div class="code-head"><span>CargoItemResource.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.CargoItemRepository;
+import at.htl.fruitshipping.entity.dto.CargoItemDto;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+@Path(&quot;cargo-items&quot;)
+@Produces(MediaType.APPLICATION_JSON)
+public class CargoItemResource {
+
+    @Inject
+    CargoItemRepository cargoItemRepository;
+
+    @GET
+    @Path(&quot;{id}&quot;)
+    public CargoItemDto getById(@PathParam(&quot;id&quot;) long id) {
+        return cargoItemRepository.findByIdOptional(id)
+                .map(DtoMapper::toDto)
+                .orElseThrow(() -&gt; notFound(id));
+    }
+
+    @DELETE
+    @Path(&quot;{id}&quot;)
+    @Transactional
+    public Response delete(@PathParam(&quot;id&quot;) long id) {
+        if (!cargoItemRepository.deleteById(id)) {
+            throw notFound(id);
+        }
+        return Response.noContent().build();
+    }
+
+    private static NotFoundException notFound(long id) {
+        return new NotFoundException(&quot;Cargo item &quot; + id + &quot; not found&quot;);
+    }
+}</code></pre></div></article><article class="card" id="file-exceptionmappers-java" data-search="exceptionmappers.java komplettloesung datei file exceptionmappers.java backend/src/main/java/at/htl/fruitshipping/boundary/exceptionmappers.java exceptionmappers.java package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.exception.cargoruleexception; import at.htl.fruitshipping.entity.dto.errordto; import jakarta.validation.constraintviolation; import jakarta.validation.constraintviolationexception; import jakarta.validation.path; import jakarta.ws.rs.badrequestexception; import jakarta.ws.rs.notfoundexception; import jakarta.ws.rs.core.response; import org.jboss.resteasy.reactive.restresponse; import org.jboss.resteasy.reactive.server.serverexceptionmapper; /** every error is answered as {&quot;message&quot;: &quot;...&quot;} */ public class exceptionmappers { @serverexceptionmapper public restresponse&lt;errordto&gt; mapcargorule(cargoruleexception e) { return restresponse.status(response.status.conflict, new errordto(e.getmessage())); } @serverexceptionmapper public restresponse&lt;errordto&gt; mapnotfound(notfoundexception e) { return restresponse.status(response.status.not_found, new errordto(e.getmessage())); } @serverexceptionmapper public restresponse&lt;errordto&gt; mapbadrequest(badrequestexception e) { return restresponse.status(response.status.bad_request, new errordto(e.getmessage())); } /** bean validation, e.g. &quot;fruitid must not be null&quot; */ @serverexceptionmapper public restresponse&lt;errordto&gt; mapvalidation(constraintviolationexception e) { constraintviolation&lt;?&gt; violation = e.getconstraintviolations().iterator().next(); string field = null; for (path.node node : violation.getpropertypath()) { field = node.getname(); // last node = field name (path is &quot;loadcargo.dto.fruitid&quot;) } return restresponse.status(response.status.bad_request, new errordto(field + &quot; &quot; + violation.getmessage())); } }"><h3><a href="#file-exceptionmappers-java">ExceptionMappers.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/boundary/ExceptionMappers.java</p></div><div class="code"><div class="code-head"><span>ExceptionMappers.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.exception.CargoRuleException;
+import at.htl.fruitshipping.entity.dto.ErrorDto;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+
+/** every error is answered as {&quot;message&quot;: &quot;...&quot;} */
+public class ExceptionMappers {
+
+    @ServerExceptionMapper
+    public RestResponse&lt;ErrorDto&gt; mapCargoRule(CargoRuleException e) {
+        return RestResponse.status(Response.Status.CONFLICT, new ErrorDto(e.getMessage()));
+    }
+
+    @ServerExceptionMapper
+    public RestResponse&lt;ErrorDto&gt; mapNotFound(NotFoundException e) {
+        return RestResponse.status(Response.Status.NOT_FOUND, new ErrorDto(e.getMessage()));
+    }
+
+    @ServerExceptionMapper
+    public RestResponse&lt;ErrorDto&gt; mapBadRequest(BadRequestException e) {
+        return RestResponse.status(Response.Status.BAD_REQUEST, new ErrorDto(e.getMessage()));
+    }
+
+    /** bean validation, e.g. &quot;fruitId must not be null&quot; */
+    @ServerExceptionMapper
+    public RestResponse&lt;ErrorDto&gt; mapValidation(ConstraintViolationException e) {
+        ConstraintViolation&lt;?&gt; violation = e.getConstraintViolations().iterator().next();
+        String field = null;
+        for (Path.Node node : violation.getPropertyPath()) {
+            field = node.getName(); // last node = field name (path is &quot;loadCargo.dto.fruitId&quot;)
+        }
+        return RestResponse.status(Response.Status.BAD_REQUEST, new ErrorDto(field + &quot; &quot; + violation.getMessage()));
+    }
+}</code></pre></div></article><article class="card" id="file-shippinggraphqlapi-java" data-search="shippinggraphqlapi.java komplettloesung datei file shippinggraphqlapi.java backend/src/main/java/at/htl/fruitshipping/boundary/shippinggraphqlapi.java shippinggraphqlapi.java package at.htl.fruitshipping.boundary; import at.htl.fruitshipping.control.fruitrepository; import at.htl.fruitshipping.control.voyagerepository; import at.htl.fruitshipping.entity.fruit; import at.htl.fruitshipping.entity.dto.dtomapper; import at.htl.fruitshipping.entity.dto.fruitgql; import at.htl.fruitshipping.entity.dto.voyagegql; import jakarta.inject.inject; import jakarta.transaction.transactional; import org.eclipse.microprofile.graphql.description; import org.eclipse.microprofile.graphql.graphqlapi; import org.eclipse.microprofile.graphql.name; import org.eclipse.microprofile.graphql.query; import java.util.list; @graphqlapi public class shippinggraphqlapi { @inject voyagerepository voyagerepository; @inject fruitrepository fruitrepository; @query(&quot;voyages&quot;) @description(&quot;all voyages ordered by departure&quot;) @transactional public list&lt;voyagegql&gt; voyages() { return voyagerepository.findallorderedbydeparture().stream().map(dtomapper::togql).tolist(); } @query(&quot;voyage&quot;) @description(&quot;one voyage or null&quot;) @transactional public voyagegql voyage(@name(&quot;id&quot;) long id) { return voyagerepository.findbyidoptional(id).map(dtomapper::togql).orelse(null); } @query(&quot;fruits&quot;) @description(&quot;all fruits or only the fruits of one category&quot;) public list&lt;fruitgql&gt; fruits(@name(&quot;climacteric&quot;) boolean climacteric) { list&lt;fruit&gt; fruits = climacteric == null ? fruitrepository.findallorderedbyname() : fruitrepository.findbyclimacteric(climacteric); return fruits.stream().map(dtomapper::togql).tolist(); } }"><h3><a href="#file-shippinggraphqlapi-java">ShippingGraphQLApi.java</a></h3><div class="body"><p class='path'>backend/src/main/java/at/htl/fruitshipping/boundary/ShippingGraphQLApi.java</p></div><div class="code"><div class="code-head"><span>ShippingGraphQLApi.java</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-java">package at.htl.fruitshipping.boundary;
+
+import at.htl.fruitshipping.control.FruitRepository;
+import at.htl.fruitshipping.control.VoyageRepository;
+import at.htl.fruitshipping.entity.Fruit;
+import at.htl.fruitshipping.entity.dto.DtoMapper;
+import at.htl.fruitshipping.entity.dto.FruitGql;
+import at.htl.fruitshipping.entity.dto.VoyageGql;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.graphql.Description;
+import org.eclipse.microprofile.graphql.GraphQLApi;
+import org.eclipse.microprofile.graphql.Name;
+import org.eclipse.microprofile.graphql.Query;
+
+import java.util.List;
+
+@GraphQLApi
+public class ShippingGraphQLApi {
+
+    @Inject
+    VoyageRepository voyageRepository;
+    @Inject
+    FruitRepository fruitRepository;
+
+    @Query(&quot;voyages&quot;)
+    @Description(&quot;all voyages ordered by departure&quot;)
+    @Transactional
+    public List&lt;VoyageGql&gt; voyages() {
+        return voyageRepository.findAllOrderedByDeparture().stream().map(DtoMapper::toGql).toList();
+    }
+
+    @Query(&quot;voyage&quot;)
+    @Description(&quot;one voyage or null&quot;)
+    @Transactional
+    public VoyageGql voyage(@Name(&quot;id&quot;) long id) {
+        return voyageRepository.findByIdOptional(id).map(DtoMapper::toGql).orElse(null);
+    }
+
+    @Query(&quot;fruits&quot;)
+    @Description(&quot;all fruits or only the fruits of one category&quot;)
+    public List&lt;FruitGql&gt; fruits(@Name(&quot;climacteric&quot;) Boolean climacteric) {
+        List&lt;Fruit&gt; fruits = climacteric == null
+                ? fruitRepository.findAllOrderedByName()
+                : fruitRepository.findByClimacteric(climacteric);
+        return fruits.stream().map(DtoMapper::toGql).toList();
+    }
+}</code></pre></div></article><article class="card" id="file-cargo-ts" data-search="cargo.ts komplettloesung datei file cargo.ts frontend/src/app/cargo/cargo.ts cargo.ts import { component, computed, inject, signal } from &#x27;@angular/core&#x27;; import { httperrorresponse } from &#x27;@angular/common/http&#x27;; import { shippingservice } from &#x27;../shipping.service&#x27;; import { containerdto, errordto, fruitdto, voyagedto } from &#x27;../model/dtos&#x27;; import { containerlistcomponent } from &#x27;../container-list/container-list&#x27;; /** page: select a voyage, show its containers and load cargo */ @component({ selector: &#x27;app-cargo&#x27;, imports: [containerlistcomponent], templateurl: &#x27;./cargo.html&#x27;, styleurl: &#x27;./cargo.css&#x27; }) export class cargocomponent { private readonly service = inject(shippingservice); readonly voyages = signal&lt;voyagedto[]&gt;([]); readonly fruits = signal&lt;fruitdto[]&gt;([]); readonly containers = signal&lt;containerdto[]&gt;([]); readonly selectedvoyageid = signal&lt;number | null&gt;(null); readonly errormessage = signal&lt;string | null&gt;(null); // form state readonly containerid = signal&lt;number | null&gt;(null); readonly fruitid = signal&lt;number | null&gt;(null); readonly weightkg = signal&lt;number | null&gt;(null); readonly origincountry = signal(&#x27;&#x27;); readonly totalweight = computed(() =&gt; this.containers().reduce((sum, c) =&gt; sum + c.loadedkg, 0)); readonly formvalid = computed(() =&gt; this.containerid() !== null &amp;&amp; this.fruitid() !== null &amp;&amp; (this.weightkg() ?? 0) &gt; 0 &amp;&amp; this.origincountry().trim() !== &#x27;&#x27;); constructor() { this.service.getvoyages().subscribe(v =&gt; this.voyages.set(v)); this.service.getfruits().subscribe(f =&gt; this.fruits.set(f)); } selectvoyage(value: string): void { const id = value ? number(value) : null; this.selectedvoyageid.set(id); this.containerid.set(null); this.reload(); } reload(): void { const id = this.selectedvoyageid(); if (id === null) { this.containers.set([]); return; } this.service.getcontainers(id).subscribe(c =&gt; this.containers.set(c)); } tonumberornull(value: string): number | null { return value === &#x27;&#x27; ? null : number(value); } load(): void { if (!this.formvalid()) return; this.service.loadcargo(this.containerid()!, { fruitid: this.fruitid()!, weightkg: this.weightkg()!, origincountry: this.origincountry().trim() }).subscribe({ next: () =&gt; { this.errormessage.set(null); this.containerid.set(null); this.fruitid.set(null); this.weightkg.set(null); this.origincountry.set(&#x27;&#x27;); this.reload(); }, error: (err: httperrorresponse) =&gt; this.showerror(err) }); } removeitem(cargoitemid: number): void { this.service.deletecargoitem(cargoitemid).subscribe({ next: () =&gt; this.reload(), error: (err: httperrorresponse) =&gt; this.showerror(err) }); } private showerror(err: httperrorresponse): void { this.errormessage.set((err.error as errordto | null)?.message ?? err.message); } }"><h3><a href="#file-cargo-ts">cargo.ts</a></h3><div class="body"><p class='path'>frontend/src/app/cargo/cargo.ts</p></div><div class="code"><div class="code-head"><span>cargo.ts</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-typescript">import { Component, computed, inject, signal } from &#x27;@angular/core&#x27;;
+import { HttpErrorResponse } from &#x27;@angular/common/http&#x27;;
+import { ShippingService } from &#x27;../shipping.service&#x27;;
+import { ContainerDto, ErrorDto, FruitDto, VoyageDto } from &#x27;../model/dtos&#x27;;
+import { ContainerListComponent } from &#x27;../container-list/container-list&#x27;;
+
+/** page: select a voyage, show its containers and load cargo */
+@Component({
+  selector: &#x27;app-cargo&#x27;,
+  imports: [ContainerListComponent],
+  templateUrl: &#x27;./cargo.html&#x27;,
+  styleUrl: &#x27;./cargo.css&#x27;
+})
+export class CargoComponent {
+  private readonly service = inject(ShippingService);
+
+  readonly voyages = signal&lt;VoyageDto[]&gt;([]);
+  readonly fruits = signal&lt;FruitDto[]&gt;([]);
+  readonly containers = signal&lt;ContainerDto[]&gt;([]);
+  readonly selectedVoyageId = signal&lt;number | null&gt;(null);
+  readonly errorMessage = signal&lt;string | null&gt;(null);
+
+  // form state
+  readonly containerId = signal&lt;number | null&gt;(null);
+  readonly fruitId = signal&lt;number | null&gt;(null);
+  readonly weightKg = signal&lt;number | null&gt;(null);
+  readonly originCountry = signal(&#x27;&#x27;);
+
+  readonly totalWeight = computed(() =&gt;
+    this.containers().reduce((sum, c) =&gt; sum + c.loadedKg, 0));
+
+  readonly formValid = computed(() =&gt;
+    this.containerId() !== null &amp;&amp;
+    this.fruitId() !== null &amp;&amp;
+    (this.weightKg() ?? 0) &gt; 0 &amp;&amp;
+    this.originCountry().trim() !== &#x27;&#x27;);
+
+  constructor() {
+    this.service.getVoyages().subscribe(v =&gt; this.voyages.set(v));
+    this.service.getFruits().subscribe(f =&gt; this.fruits.set(f));
+  }
+
+  selectVoyage(value: string): void {
+    const id = value ? Number(value) : null;
+    this.selectedVoyageId.set(id);
+    this.containerId.set(null);
+    this.reload();
+  }
+
+  reload(): void {
+    const id = this.selectedVoyageId();
+    if (id === null) {
+      this.containers.set([]);
+      return;
+    }
+    this.service.getContainers(id).subscribe(c =&gt; this.containers.set(c));
+  }
+
+  toNumberOrNull(value: string): number | null {
+    return value === &#x27;&#x27; ? null : Number(value);
+  }
+
+  load(): void {
+    if (!this.formValid()) return;
+    this.service.loadCargo(this.containerId()!, {
+      fruitId: this.fruitId()!,
+      weightKg: this.weightKg()!,
+      originCountry: this.originCountry().trim()
+    }).subscribe({
+      next: () =&gt; {
+        this.errorMessage.set(null);
+        this.containerId.set(null);
+        this.fruitId.set(null);
+        this.weightKg.set(null);
+        this.originCountry.set(&#x27;&#x27;);
+        this.reload();
+      },
+      error: (err: HttpErrorResponse) =&gt; this.showError(err)
+    });
+  }
+
+  removeItem(cargoItemId: number): void {
+    this.service.deleteCargoItem(cargoItemId).subscribe({
+      next: () =&gt; this.reload(),
+      error: (err: HttpErrorResponse) =&gt; this.showError(err)
+    });
+  }
+
+  private showError(err: HttpErrorResponse): void {
+    this.errorMessage.set((err.error as ErrorDto | null)?.message ?? err.message);
+  }
+}</code></pre></div></article><article class="card" id="file-cargo-html" data-search="cargo.html komplettloesung datei file cargo.html frontend/src/app/cargo/cargo.html cargo.html &lt;section&gt; &lt;label&gt; voyage &lt;select [value]=&quot;selectedvoyageid() ?? &#x27;&#x27;&quot; (change)=&quot;selectvoyage($any($event.target).value)&quot;&gt; &lt;option value=&quot;&quot;&gt;-- select a voyage --&lt;/option&gt; @for (v of voyages(); track v.id) { &lt;option [value]=&quot;v.id&quot;&gt;{{ v.shipname }} ({{ v.departureport }} → {{ v.destinationport }}, {{ v.departuredate }})&lt;/option&gt; } &lt;/select&gt; &lt;/label&gt; &lt;/section&gt; @if (selectedvoyageid() !== null) { &lt;section&gt; &lt;app-container-list [containers]=&quot;containers()&quot; (remove)=&quot;removeitem($event)&quot; /&gt; &lt;p&gt;&lt;strong&gt;total weight: {{ totalweight() }} kg&lt;/strong&gt;&lt;/p&gt; &lt;/section&gt; &lt;section&gt; &lt;h2&gt;load cargo&lt;/h2&gt; @if (errormessage()) { &lt;p class=&quot;error&quot;&gt;{{ errormessage() }}&lt;/p&gt; } &lt;form class=&quot;cargo-form&quot; (submit)=&quot;$event.preventdefault(); load()&quot;&gt; &lt;label&gt; container &lt;select [value]=&quot;containerid() ?? &#x27;&#x27;&quot; (change)=&quot;containerid.set(tonumberornull($any($event.target).value))&quot;&gt; &lt;option value=&quot;&quot;&gt;--&lt;/option&gt; @for (c of containers(); track c.id) { &lt;option [value]=&quot;c.id&quot;&gt;{{ c.containernumber }} (free {{ c.freekg }} kg)&lt;/option&gt; } &lt;/select&gt; &lt;/label&gt; &lt;label&gt; fruit &lt;select [value]=&quot;fruitid() ?? &#x27;&#x27;&quot; (change)=&quot;fruitid.set(tonumberornull($any($event.target).value))&quot;&gt; &lt;option value=&quot;&quot;&gt;--&lt;/option&gt; @for (f of fruits(); track f.id) { &lt;option [value]=&quot;f.id&quot;&gt;{{ f.name }} ({{ f.mintemperature }}–{{ f.maxtemperature }} °c)&lt;/option&gt; } &lt;/select&gt; &lt;/label&gt; &lt;label&gt; weight (kg) &lt;input type=&quot;number&quot; [value]=&quot;weightkg() ?? &#x27;&#x27;&quot; (input)=&quot;weightkg.set(tonumberornull($any($event.target).value))&quot; /&gt; &lt;/label&gt; &lt;label&gt; origin country &lt;input type=&quot;text&quot; [value]=&quot;origincountry()&quot; (input)=&quot;origincountry.set($any($event.target).value)&quot; /&gt; &lt;/label&gt; &lt;button type=&quot;submit&quot; [disabled]=&quot;!formvalid()&quot;&gt;load&lt;/button&gt; &lt;/form&gt; &lt;/section&gt; }"><h3><a href="#file-cargo-html">cargo.html</a></h3><div class="body"><p class='path'>frontend/src/app/cargo/cargo.html</p></div><div class="code"><div class="code-head"><span>cargo.html</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-html">&lt;section&gt;
+  &lt;label&gt;
+    Voyage
+    &lt;select [value]=&quot;selectedVoyageId() ?? &#x27;&#x27;&quot; (change)=&quot;selectVoyage($any($event.target).value)&quot;&gt;
+      &lt;option value=&quot;&quot;&gt;-- select a voyage --&lt;/option&gt;
+      @for (v of voyages(); track v.id) {
+        &lt;option [value]=&quot;v.id&quot;&gt;{{ v.shipName }} ({{ v.departurePort }} → {{ v.destinationPort }}, {{ v.departureDate }})&lt;/option&gt;
+      }
+    &lt;/select&gt;
+  &lt;/label&gt;
+&lt;/section&gt;
+
+@if (selectedVoyageId() !== null) {
+  &lt;section&gt;
+    &lt;app-container-list [containers]=&quot;containers()&quot; (remove)=&quot;removeItem($event)&quot; /&gt;
+    &lt;p&gt;&lt;strong&gt;Total weight: {{ totalWeight() }} kg&lt;/strong&gt;&lt;/p&gt;
+  &lt;/section&gt;
+
+  &lt;section&gt;
+    &lt;h2&gt;Load cargo&lt;/h2&gt;
+    @if (errorMessage()) {
+      &lt;p class=&quot;error&quot;&gt;{{ errorMessage() }}&lt;/p&gt;
+    }
+    &lt;form class=&quot;cargo-form&quot; (submit)=&quot;$event.preventDefault(); load()&quot;&gt;
+      &lt;label&gt;
+        Container
+        &lt;select [value]=&quot;containerId() ?? &#x27;&#x27;&quot; (change)=&quot;containerId.set(toNumberOrNull($any($event.target).value))&quot;&gt;
+          &lt;option value=&quot;&quot;&gt;--&lt;/option&gt;
+          @for (c of containers(); track c.id) {
+            &lt;option [value]=&quot;c.id&quot;&gt;{{ c.containerNumber }} (free {{ c.freeKg }} kg)&lt;/option&gt;
+          }
+        &lt;/select&gt;
+      &lt;/label&gt;
+      &lt;label&gt;
+        Fruit
+        &lt;select [value]=&quot;fruitId() ?? &#x27;&#x27;&quot; (change)=&quot;fruitId.set(toNumberOrNull($any($event.target).value))&quot;&gt;
+          &lt;option value=&quot;&quot;&gt;--&lt;/option&gt;
+          @for (f of fruits(); track f.id) {
+            &lt;option [value]=&quot;f.id&quot;&gt;{{ f.name }} ({{ f.minTemperature }}–{{ f.maxTemperature }} °C)&lt;/option&gt;
+          }
+        &lt;/select&gt;
+      &lt;/label&gt;
+      &lt;label&gt;
+        Weight (kg)
+        &lt;input type=&quot;number&quot; [value]=&quot;weightKg() ?? &#x27;&#x27;&quot; (input)=&quot;weightKg.set(toNumberOrNull($any($event.target).value))&quot; /&gt;
+      &lt;/label&gt;
+      &lt;label&gt;
+        Origin country
+        &lt;input type=&quot;text&quot; [value]=&quot;originCountry()&quot; (input)=&quot;originCountry.set($any($event.target).value)&quot; /&gt;
+      &lt;/label&gt;
+      &lt;button type=&quot;submit&quot; [disabled]=&quot;!formValid()&quot;&gt;Load&lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/section&gt;
+}</code></pre></div></article><article class="card" id="file-container-list-ts" data-search="container-list.ts komplettloesung datei file container-list.ts frontend/src/app/container-list/container-list.ts container-list.ts import { component, input, output } from &#x27;@angular/core&#x27;; import { containerdto } from &#x27;../model/dtos&#x27;; @component({ selector: &#x27;app-container-list&#x27;, imports: [], templateurl: &#x27;./container-list.html&#x27;, styleurl: &#x27;./container-list.css&#x27; }) export class containerlistcomponent { readonly containers = input.required&lt;containerdto[]&gt;(); /** id of the cargo item to remove */ readonly remove = output&lt;number&gt;(); }"><h3><a href="#file-container-list-ts">container-list.ts</a></h3><div class="body"><p class='path'>frontend/src/app/container-list/container-list.ts</p></div><div class="code"><div class="code-head"><span>container-list.ts</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-typescript">import { Component, input, output } from &#x27;@angular/core&#x27;;
+import { ContainerDto } from &#x27;../model/dtos&#x27;;
+
+@Component({
+  selector: &#x27;app-container-list&#x27;,
+  imports: [],
+  templateUrl: &#x27;./container-list.html&#x27;,
+  styleUrl: &#x27;./container-list.css&#x27;
+})
+export class ContainerListComponent {
+  readonly containers = input.required&lt;ContainerDto[]&gt;();
+  /** id of the cargo item to remove */
+  readonly remove = output&lt;number&gt;();
+}</code></pre></div></article><article class="card" id="file-container-list-html" data-search="container-list.html komplettloesung datei file container-list.html frontend/src/app/container-list/container-list.html container-list.html &lt;table&gt; &lt;thead&gt; &lt;tr&gt; &lt;th&gt;container&lt;/th&gt;&lt;th&gt;category&lt;/th&gt;&lt;th&gt;setpoint&lt;/th&gt;&lt;th&gt;loaded&lt;/th&gt;&lt;th&gt;free&lt;/th&gt;&lt;th&gt;cargo items&lt;/th&gt; &lt;/tr&gt; &lt;/thead&gt; &lt;tbody&gt; @for (c of containers(); track c.id) { &lt;tr&gt; &lt;td&gt;{{ c.containernumber }}&lt;/td&gt; &lt;td&gt; @switch (c.climacteric) { @case (true) { climacteric } @case (false) { non-climacteric } @default { &lt;em&gt;empty&lt;/em&gt; } } &lt;/td&gt; &lt;td&gt; @if (c.setpointtemperature !== null) { {{ c.setpointtemperature }} °c } &lt;/td&gt; &lt;td&gt;{{ c.loadedkg }} kg&lt;/td&gt; &lt;td&gt;{{ c.freekg }} kg&lt;/td&gt; &lt;td&gt; &lt;ul&gt; @for (item of c.cargoitems; track item.id) { &lt;li&gt; {{ item.fruitname }}, {{ item.weightkg }} kg ({{ item.origincountry }}) &lt;button type=&quot;button&quot; (click)=&quot;remove.emit(item.id)&quot;&gt;remove&lt;/button&gt; &lt;/li&gt; } @empty { &lt;li&gt;–&lt;/li&gt; } &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; } &lt;/tbody&gt; &lt;/table&gt;"><h3><a href="#file-container-list-html">container-list.html</a></h3><div class="body"><p class='path'>frontend/src/app/container-list/container-list.html</p></div><div class="code"><div class="code-head"><span>container-list.html</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-html">&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Container&lt;/th&gt;&lt;th&gt;Category&lt;/th&gt;&lt;th&gt;Setpoint&lt;/th&gt;&lt;th&gt;Loaded&lt;/th&gt;&lt;th&gt;Free&lt;/th&gt;&lt;th&gt;Cargo items&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    @for (c of containers(); track c.id) {
+      &lt;tr&gt;
+        &lt;td&gt;{{ c.containerNumber }}&lt;/td&gt;
+        &lt;td&gt;
+          @switch (c.climacteric) {
+            @case (true) { climacteric }
+            @case (false) { non-climacteric }
+            @default { &lt;em&gt;empty&lt;/em&gt; }
+          }
+        &lt;/td&gt;
+        &lt;td&gt;
+          @if (c.setpointTemperature !== null) { {{ c.setpointTemperature }} °C }
+        &lt;/td&gt;
+        &lt;td&gt;{{ c.loadedKg }} kg&lt;/td&gt;
+        &lt;td&gt;{{ c.freeKg }} kg&lt;/td&gt;
+        &lt;td&gt;
+          &lt;ul&gt;
+            @for (item of c.cargoItems; track item.id) {
+              &lt;li&gt;
+                {{ item.fruitName }}, {{ item.weightKg }} kg ({{ item.originCountry }})
+                &lt;button type=&quot;button&quot; (click)=&quot;remove.emit(item.id)&quot;&gt;Remove&lt;/button&gt;
+              &lt;/li&gt;
+            } @empty {
+              &lt;li&gt;–&lt;/li&gt;
+            }
+          &lt;/ul&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    }
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre></div></article><article class="card" id="file-container-list-css" data-search="container-list.css komplettloesung datei file container-list.css frontend/src/app/container-list/container-list.css container-list.css table { border-collapse: collapse; width: 100%; } th, td { border: 1px solid #ccc; padding: .35rem .5rem; text-align: left; vertical-align: top; } ul { margin: 0; padding-left: 1rem; }"><h3><a href="#file-container-list-css">container-list.css</a></h3><div class="body"><p class='path'>frontend/src/app/container-list/container-list.css</p></div><div class="code"><div class="code-head"><span>container-list.css</span><button class="copy" type="button">Kopieren</button></div><pre><code class="language-css">table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ccc; padding: .35rem .5rem; text-align: left; vertical-align: top; }
+ul { margin: 0; padding-left: 1rem; }</code></pre></div></article></section>
+    <div class="empty" id="empty">Keine Treffer.</div>
+  </main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/graphql.min.js"></script>
+<script>
+(function () {
+  if (window.hljs) document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+
+  const q = document.getElementById('q');
+  const cards = [...document.querySelectorAll('.card')];
+  const sections = [...document.querySelectorAll('section.cat')];
+  const navLinks = [...document.querySelectorAll('nav a')];
+  const navGroups = [...document.querySelectorAll('.nav-group')];
+  const count = document.getElementById('count');
+  const empty = document.getElementById('empty');
+  const canHighlight = typeof CSS !== 'undefined' && CSS.highlights && typeof Highlight !== 'undefined';
+
+  // Umlaute/ß tolerant: "groesse" findet "größe" und umgekehrt
+  const norm = s => s.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
+  cards.forEach(c => c.dataset.norm = norm(c.dataset.search));
+
+  function highlight(words) {
+    if (!canHighlight) return;
+    CSS.highlights.delete('search');
+    if (!words.length) return;
+    const ranges = [];
+    for (const card of cards) {
+      if (card.classList.contains('hidden')) continue;
+      const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walker.nextNode())) {
+        const text = node.nodeValue.toLowerCase();
+        for (const w of words) {
+          let i = text.indexOf(w);
+          while (i !== -1) {
+            const r = new Range();
+            r.setStart(node, i); r.setEnd(node, i + w.length);
+            ranges.push(r);
+            i = text.indexOf(w, i + w.length);
+          }
+        }
+      }
+    }
+    CSS.highlights.set('search', new Highlight(...ranges));
+  }
+
+  function run() {
+    const raw = q.value.trim().toLowerCase();
+    const words = raw.split(/\s+/).filter(Boolean);
+    const nwords = words.map(norm);
+    let shown = 0;
+    const visible = new Set();
+    for (const c of cards) {
+      const hit = nwords.every(w => c.dataset.norm.includes(w));
+      c.classList.toggle('hidden', !hit);
+      if (hit) { shown++; visible.add(c.id); }
+    }
+    sections.forEach(s => s.classList.toggle('hidden', !s.querySelector('.card:not(.hidden)')));
+    navLinks.forEach(a => a.classList.toggle('hidden', !visible.has(a.dataset.for)));
+    navGroups.forEach(g => g.classList.toggle('hidden', !g.querySelector('a:not(.hidden)')));
+    empty.style.display = shown ? 'none' : 'block';
+    count.textContent = words.length ? shown + ' / ' + cards.length + ' Treffer' : cards.length + ' Einträge';
+    highlight(words);
+    try { history.replaceState(null, '', raw ? '?q=' + encodeURIComponent(raw) + location.hash : location.pathname + location.hash); } catch (e) {}
+  }
+
+  let t;
+  q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(run, 80); });
+  q.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { q.value = ''; run(); }
+    if (e.key === 'Enter') {
+      const first = cards.find(c => !c.classList.contains('hidden'));
+      if (first) first.scrollIntoView({ block: 'start' });
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && document.activeElement !== q) {
+      e.preventDefault(); q.focus(); q.select();
+    }
+  });
+
+  document.querySelectorAll('.copy').forEach(btn => btn.addEventListener('click', () => {
+    const code = btn.closest('.code').querySelector('code').innerText;
+    const done = () => { btn.textContent = 'Kopiert ✓'; btn.classList.add('done');
+      setTimeout(() => { btn.textContent = 'Kopieren'; btn.classList.remove('done'); }, 1400); };
+    if (navigator.clipboard) navigator.clipboard.writeText(code).then(done, () => fallback(code, done));
+    else fallback(code, done);
+  }));
+  function fallback(text, done) {
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove();
+  }
+
+  const nav = document.getElementById('nav');
+  document.getElementById('menu').addEventListener('click', () => nav.classList.toggle('open'));
+  navLinks.forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+
+  const initial = new URLSearchParams(location.search).get('q');
+  if (initial) q.value = initial;
+  run();
+})();
+</script>
+</body>
+</html>
